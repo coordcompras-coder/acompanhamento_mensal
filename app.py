@@ -189,7 +189,7 @@ for i, diretoria in enumerate(diretorias):
         tabela_nao_previsto[["GERENCIA", "DESCRICAO", "TIPO", "VALOR_REAL"]]
         .style.format({
             "VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        })
+        }),
         use_container_width=True
     )
         
@@ -209,7 +209,7 @@ for i, diretoria in enumerate(diretorias):
             tabela_total[["MES_NOME", "DESCRICAO", "VALOR_REAL"]]
         .style.format({
             "VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        })
+        }),
             use_container_width=True
         )
 
