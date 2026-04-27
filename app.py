@@ -3,6 +3,12 @@ import pandas as pd
 import os
 import plotly.express as px
 
+
+def formatar_moeda(valor):
+    return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+
 # CONFIGURAÇÃO
 st.set_page_config(
     page_title="Dashboard de Compras e Serviços",
@@ -74,9 +80,10 @@ for i, diretoria in enumerate(diretorias):
 
         col1, col2, col3 = st.columns(3)
 
-        col1.metric("Orçamento Aquisição", f"R$ {orc_aquisicao:,.0f}")
-        col2.metric("Realizado", f"R$ {realizado_total:,.0f}")
-        col3.metric("Não Previsto", f"R$ {nao_previsto:,.0f}")
+
+        col1.metric("Orçamento Aquisição", formatar_moeda(orc_aquisicao))
+        col2.metric("Realizado", formatar_moeda(realizado_total))
+        col3.metric("Não Previsto", formatar_moeda(nao_previsto))
 
         st.markdown("---")
 
@@ -97,11 +104,13 @@ for i, diretoria in enumerate(diretorias):
         )
 
         fig_bar.update_traces(
-            texttemplate="R$ %{y:,.0f}"
+            texttemplate="R$ %{y:,.2f}",
+            textposition="outside"
         )
 
         fig_bar.update_layout(
-            yaxis_tickprefix="R$ "
+            yaxis_tickprefix="R$ ",
+            yaxis_tickformat=",.2f"
         )
 
         st.plotly_chart(fig_bar, use_container_width=True)
@@ -132,11 +141,18 @@ for i, diretoria in enumerate(diretorias):
 
         fig_linha.update_traces(
             line_shape="spline",
-            texttemplate="R$ %{y:,.0f}"
+            texttemplate="R$ %{y:,.0f}",
+            hovertemplate="R$ %{y:,.2f}"
         )
 
         fig_linha.update_layout(
-            yaxis_tickprefix="R$ "
+            yaxis_tickprefix="R$ ",
+            yaxis_tickformat=",.2f"
+        )
+
+        fig_linha.update_yaxes(
+            tickprefix="R$ ",
+            separatethousands=True
         )        
 
         st.plotly_chart(fig_linha, use_container_width=True)
@@ -156,7 +172,7 @@ for i, diretoria in enumerate(diretorias):
 
         st.dataframe(
         tabela_mensal[["MES_NOME", "VALOR_REAL"]]
-        .style.format({"VALOR_REAL": "R$ {:,.0f}"}),
+        .style.format({"VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")}),
         use_container_width=True
         )
 
@@ -169,7 +185,7 @@ for i, diretoria in enumerate(diretorias):
 
         st.dataframe(
         tabela_nao_previsto[["GERENCIA", "DESCRICAO", "TIPO", "VALOR_REAL"]]
-        .style.format({"VALOR_REAL": "R$ {:,.0f}"}),
+        .style.format({"VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")}),
         use_container_width=True
     )
         
@@ -187,7 +203,7 @@ for i, diretoria in enumerate(diretorias):
 
         st.dataframe(
             tabela_total[["MES_NOME", "DESCRICAO", "VALOR_REAL"]]
-            .style.format({"VALOR_REAL": "R$ {:,.0f}"}),
+            .style.format({"VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")"}),
             use_container_width=True
         )
 
