@@ -18,7 +18,7 @@ st.image(logo_path, width=300)
 st.title("📊 ACOMPANHAMENTO DE GASTOS PREVISTOS E NÃO PREVISTOS 2026")
 
 # ================== CARREGAR EXCEL ==================
-caminho_excel = os.path.join(current_dir, "dados.xlsx")
+caminho_excel = "https://docs.google.com/spreadsheets/d/1TiTr8mzVnE0baK3vsctaYWdBVZ6A1FHi/export?format=xlsx"
 
 df_previsto = pd.read_excel(caminho_excel, sheet_name="previsto")
 df_realizado = pd.read_excel(caminho_excel, sheet_name="realizado")
