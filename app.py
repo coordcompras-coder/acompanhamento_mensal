@@ -172,7 +172,9 @@ for i, diretoria in enumerate(diretorias):
 
         st.dataframe(
         tabela_mensal[["MES_NOME", "VALOR_REAL"]]
-        .style.format({"VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")}),
+        .style.format({
+            "VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        }),
         use_container_width=True
         )
 
@@ -185,7 +187,9 @@ for i, diretoria in enumerate(diretorias):
 
         st.dataframe(
         tabela_nao_previsto[["GERENCIA", "DESCRICAO", "TIPO", "VALOR_REAL"]]
-        .style.format({"VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")}),
+        .style.format({
+            "VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        })
         use_container_width=True
     )
         
@@ -203,7 +207,9 @@ for i, diretoria in enumerate(diretorias):
 
         st.dataframe(
             tabela_total[["MES_NOME", "DESCRICAO", "VALOR_REAL"]]
-            .style.format({"VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")"}),
+        .style.format({
+            "VALOR_REAL": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        })
             use_container_width=True
         )
 
