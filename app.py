@@ -61,7 +61,7 @@ tabs = st.tabs(diretorias)
 for i, diretoria in enumerate(diretorias):
 
     with tabs[i]:
-        st.header(f"📊 Diretoria {diretoria}")
+        st.header(f"Diretoria {diretoria}")
 
         # FILTROS
         prev = df_previsto[df_previsto["DIRETORIA"] == diretoria]
@@ -76,7 +76,7 @@ for i, diretoria in enumerate(diretorias):
         nao_previsto = real[real["PREVISTO"] == "NAO"]["VALOR_REAL"].sum()
 
         # ================== KPIs ==================
-        st.subheader("📊 Indicadores")
+        st.subheader("Indicadores")
 
         col1, col2, col3 = st.columns(3)
 
@@ -88,7 +88,7 @@ for i, diretoria in enumerate(diretorias):
         st.markdown("---")
 
         # ================== GRÁFICO BARRAS ==================
-        st.subheader("📈 Comparativo")
+        st.subheader("Comparativo")
 
         df_grafico = pd.DataFrame({
             "Categoria": ["Orçamento", "Realizado Previsto", "Não Previsto"],
@@ -118,7 +118,7 @@ for i, diretoria in enumerate(diretorias):
         st.markdown("---")
 
         # ================== GRÁFICO LINHA ==================
-        st.subheader("📈 Evolução Mensal")
+        st.subheader("Evolução Mensal")
 
         df_linha = (
             real.groupby(["MES_NUM", "MES_NOME", "PREVISTO"])["VALOR_REAL"]
@@ -160,7 +160,7 @@ for i, diretoria in enumerate(diretorias):
         st.markdown("---")
 
         # ================== TABELA MENSAL ==================
-        st.subheader("📋 Realizado Previsto por Mês")
+        st.subheader("📋 Realizado por Mês")
 
         tabela_mensal = (
             real[real["PREVISTO"] == "SIM"]
@@ -198,7 +198,7 @@ for i, diretoria in enumerate(diretorias):
 
         st.markdown("---")
 
-        st.subheader("📊 Compras por Mês (Detalhado)")
+        st.subheader("Compras por Mês (Detalhado)")
 
         tabela_total = (
             real[["MES_NUM", "MES_NOME", "DESCRICAO", "VALOR_REAL"]]
