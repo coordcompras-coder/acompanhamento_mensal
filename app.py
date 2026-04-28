@@ -23,6 +23,30 @@ st.image(logo_path, width=300)
 
 st.title("📊 ACOMPANHAMENTO DE GASTOS PREVISTOS E NÃO PREVISTOS 2026")
 
+
+codigos = {
+    "PR2026": "PR",
+    "DG2026": "DG",
+    "DE2026": "DE",
+    "DC2026": "DC",
+    "DO2026": "DO",
+    "ADMIN2026": "TODAS"
+}
+
+codigo_input = st.text_input("🔐 Informe o código de acesso", type="password")
+
+diretoria_liberada = None
+
+if codigo_input in codigos:
+    diretoria_liberada = codigos[codigo_input]
+elif codigo_input != "":
+    st.error("Código inválido")
+
+# 🚨 BLOQUEIO AQUI
+if not diretoria_liberada:
+    st.warning("Digite um código para acessar os dados")
+    st.stop()
+
 # ================== CARREGAR EXCEL ==================
 caminho_excel = "https://docs.google.com/spreadsheets/d/1TiTr8mzVnE0baK3vsctaYWdBVZ6A1FHi/export?format=xlsx"
 
@@ -54,9 +78,12 @@ mapa_meses = {
 df_realizado["MES_NOME"] = df_realizado["MES_NOME"].map(mapa_meses)
 
 # ================== ABAS ==================
-diretorias = ["PR", "DG", "DE", "DC", "DO"]
+if diretoria_liberada == "TODAS":
+    diretorias = ["PR", "DG", "DE", "DC", "DO"]
+else:
+    diretorias = [diretoria_liberada]
+    
 tabs = st.tabs(diretorias)
-
 # ================== LOOP ==================
 for i, diretoria in enumerate(diretorias):
 
