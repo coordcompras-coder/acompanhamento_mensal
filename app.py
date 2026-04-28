@@ -21,7 +21,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 logo_path = os.path.join(current_dir, "icon", "imagem_caema.png")
 st.image(logo_path, width=300)
 
-st.title("📊 ACOMPANHAMENTO DE GASTOS PREVISTOS E NÃO PREVISTOS 2026")
+st.title("ACOMPANHAMENTO DE GASTOS PREVISTOS E NÃO PREVISTOS 2026")
 
 
 codigos = {
