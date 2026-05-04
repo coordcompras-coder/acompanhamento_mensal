@@ -43,9 +43,9 @@ elif codigo_input != "":
     st.error("Código inválido")
 
 # 🚨 BLOQUEIO AQUI
-if not diretoria_liberada:
-    st.warning("Digite um código para acessar os dados")
-    st.stop()
+# if not diretoria_liberada: ===== estou desativando o bloqueio por enquanto
+#     st.warning("Digite um código para acessar os dados")
+#     st.stop()
 
 # ================== CARREGAR EXCEL ==================
 caminho_excel = "https://docs.google.com/spreadsheets/d/1TiTr8mzVnE0baK3vsctaYWdBVZ6A1FHi/export?format=xlsx"
@@ -78,16 +78,33 @@ mapa_meses = {
 df_realizado["MES_NOME"] = df_realizado["MES_NOME"].map(mapa_meses)
 
 # ================== ABAS ==================
-if diretoria_liberada == "TODAS":
-    diretorias = ["PR", "DG", "DE", "DC", "DO"]
-else:
-    diretorias = [diretoria_liberada]
+diretorias = ["Dashboard", "PR", "DG", "DE", "DC", "DO"]
+tabs = st.tabs(["📊 Dashboard", "PR", "DG", "DE", "DC", "DO"])
+# if diretoria_liberada == "TODAS":
+#     diretorias = ["PR", "DG", "DE", "DC", "DO"]
+# else:
+#     diretorias = [diretoria_liberada]
     
-tabs = st.tabs(diretorias)
+# tabs = st.tabs(diretorias)
+# ================== DASHBOARD ==================
+with tabs[0]:
+    st.header("📊 Dashboard Geral")
+
+    total = df_realizado["VALOR_REAL"].sum()
+
+    servicos = df_realizado[df_realizado["TIPO"] == "SERVICO"]["VALOR_REAL"].sum()
+    aquisicoes = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]["VALOR_REAL"].sum()
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("Total Geral", formatar_moeda(total))
+    col2.metric("Serviços", formatar_moeda(servicos))
+    col3.metric("Aquisições", formatar_moeda(aquisicoes))
 # ================== LOOP ==================
+diretorias = ["PR", "DG", "DE", "DC", "DO"]
 for i, diretoria in enumerate(diretorias):
 
-    with tabs[i]:
+    with tabs[i + 1]:
         st.header(f"Diretoria {diretoria}")
 
         # FILTROS
