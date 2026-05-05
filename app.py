@@ -195,6 +195,7 @@ with tabs[0]:
 
     st.markdown("---")
 #DISTRIBUIÇÃO POR CLASSIFICAÇÃO
+    st.subheader("📊 Distribuição por Classificação (AQUISIÇÃO)")
     df_class = (
         df_realizado[df_realizado["TIPO"] == "AQUISICAO"]  # 👈 FILTRO AQUI
         .groupby("CLASSIFICACAO")["VALOR_OC"]
@@ -242,7 +243,8 @@ with tabs[0]:
 
     fig.update_layout(
         xaxis_tickprefix="R$ ",
-        xaxis_tickformat=",.2f"
+        xaxis_tickformat=",.2f",
+        yaxis=dict(autorange="reversed")
     )
 
     st.plotly_chart(fig, use_container_width=True)
