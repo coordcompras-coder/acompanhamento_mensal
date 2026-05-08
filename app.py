@@ -153,8 +153,12 @@ with tabs[0]:
     )
 
     fig_aq.update_layout(
-        yaxis_tickprefix="R$ ",
-        yaxis_tickformat=",.2f"
+        yaxis=dict(
+            tickprefix="R$ ",
+            tickformat=",.2f",
+            separatethousands=True
+        ),
+        separators=",."
     )
 
     st.plotly_chart(fig_aq, use_container_width=True, key="linha_aquisicao_dir")
@@ -187,8 +191,12 @@ with tabs[0]:
     )
 
     fig_sv.update_layout(
-        yaxis_tickprefix="R$ ",
-        yaxis_tickformat=",.2f"
+        yaxis=dict(
+            tickprefix="R$ ",
+            tickformat=",.2f",
+            separatethousands=True
+        ),
+        separators=",."
     )
 
     st.plotly_chart(fig_sv, use_container_width=True, key="linha_servico_dir")
@@ -602,8 +610,12 @@ for i, diretoria in enumerate(diretorias):
         )
 
         fig_linha.update_layout(
-            yaxis_tickprefix="R$ ",
-            yaxis_tickformat=",.2f"
+            yaxis=dict(
+                tickprefix="R$ ",
+                tickformat=",.2f",
+                separatethousands=True
+            ),
+            separators=",."
         )
 
         fig_linha.update_yaxes(
