@@ -75,7 +75,6 @@ if senha != SENHA_CORRETA:
 
 
 # ================== CARREGAR EXCEL ==================
-#caminho_excel = "https://docs.google.com/spreadsheets/d/1TiTr8mzVnE0baK3vsctaYWdBVZ6A1FHi/export?format=xlsx" mudei o coloquei como documento do google para que eu possa proteger os dados da planilha
 caminho_excel = "https://docs.google.com/spreadsheets/d/1seIaYVZ1D06jPZm9O7yzXbW8hi8tgV2OzBHguyNrfMY/export?format=xlsx"
 
 
@@ -637,7 +636,6 @@ for i, diretoria in enumerate(diretorias):
         st.subheader("📋 Realizado por Mês")
 
         tabela_mensal = (
-            real[real["PREVISTO"] == "SIM"]
             .groupby(["MES_NUM", "MES_NOME"])["VALOR_OC"]
             .sum()
             .reset_index()
