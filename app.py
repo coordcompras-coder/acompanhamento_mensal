@@ -592,16 +592,20 @@ for i, diretoria in enumerate(diretorias):
             .reset_index()
             .sort_values("MES_NUM")
         )
-
+        #fig linha começou a apresentar os meses bagunçados e muudei o código vou testar agora esse novo codigo
         fig_linha = px.line(
             df_linha,
             x="MES_NOME",
             y="VALOR_OC",
             color="PREVISTO",
             markers=True,
+            category_orders={
+                "MES_NOME": ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+                            "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+            },
             color_discrete_map={
-                "SIM": "#00FFAA",   # verde
-                "NAO": "#FF4B4B"    # vermelho
+                "SIM": "#00FFAA",
+                "NAO": "#FF4B4B"
             }
         )
 
