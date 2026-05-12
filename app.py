@@ -643,18 +643,12 @@ for i, diretoria in enumerate(diretorias):
             .sort_values("MES_NUM")
         )
 
-        st.table(
-            tabela_mensal[["MES_NOME", "VALOR_OC"]]
-            .style
-            .format({
-                "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-            })
-            .set_properties(**{
-                "text-align": "center"
-            })
-            .set_table_styles([
-                dict(selector='th', props=[('text-align', 'center')])
-            ])
+        st.dataframe(
+        tabela_mensal[["MES_NOME", "VALOR_OC"]]
+        .style.format({
+            "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        }),
+        use_container_width=True
         )
 
         st.markdown("---")
