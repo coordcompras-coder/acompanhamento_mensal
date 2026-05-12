@@ -643,7 +643,7 @@ for i, diretoria in enumerate(diretorias):
             .sort_values("MES_NUM")
         )
 
-        st.dataframe(
+        st.table(
             tabela_mensal[["MES_NOME", "VALOR_OC"]]
             .style
             .format({
@@ -654,8 +654,7 @@ for i, diretoria in enumerate(diretorias):
             })
             .set_table_styles([
                 dict(selector='th', props=[('text-align', 'center')])
-            ]),
-            use_container_width=True
+            ])
         )
 
         st.markdown("---")
