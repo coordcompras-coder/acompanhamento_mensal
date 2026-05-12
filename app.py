@@ -635,7 +635,7 @@ for i, diretoria in enumerate(diretorias):
         # ================== TABELA MENSAL ==================
         st.subheader("📋 Realizado por Mês")
 
-       tabela_mensal = (
+        tabela_mensal = (
             real
             .groupby(["MES_NUM", "MES_NOME"])["VALOR_OC"]
             .sum()
