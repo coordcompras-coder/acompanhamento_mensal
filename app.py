@@ -75,7 +75,9 @@ if senha != SENHA_CORRETA:
 
 
 # ================== CARREGAR EXCEL ==================
-caminho_excel = "https://docs.google.com/spreadsheets/d/1TiTr8mzVnE0baK3vsctaYWdBVZ6A1FHi/export?format=xlsx"
+#caminho_excel = "https://docs.google.com/spreadsheets/d/1TiTr8mzVnE0baK3vsctaYWdBVZ6A1FHi/export?format=xlsx" mudei o coloquei como documento do google para que eu possa proteger os dados da planilha
+caminho_excel = "https://docs.google.com/spreadsheets/d/1seIaYVZ1D06jPZm9O7yzXbW8hi8tgV2OzBHguyNrfMY/export?format=xlsx"
+
 
 df_previsto = pd.read_excel(caminho_excel, sheet_name="previsto")
 df_realizado = pd.read_excel(caminho_excel, sheet_name="realizado")
