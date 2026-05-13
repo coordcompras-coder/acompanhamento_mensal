@@ -3,6 +3,46 @@ import pandas as pd
 import os
 import plotly.express as px
 
+USUARIOS = {
+    "admin": {
+        "senha": "admin2026",
+        "acesso": ["PR", "DG", "DE", "DC", "DO"]
+    },
+    "pr": {
+        "senha": "pr2026",
+        "acesso": ["PR", "DG", "DE", "DC", "DO"]
+    },
+    "dg": {
+        "senha": "dg2026",
+        "acesso": ["DG"]
+    },
+    "dc": {
+        "senha": "dc2026",
+        "acesso": ["DC"]
+    },
+    "de": {
+        "senha": "de2026",
+        "acesso": ["DE"]
+    },
+    "do": {
+        "senha": "do2026",
+        "acesso": ["DO"]
+    }
+}
+
+
+usuario = st.text_input("Usuário")
+senha = st.text_input("Senha", type="password")
+
+if usuario in USUARIOS and senha == USUARIOS[usuario]["senha"]:
+    diretorias_liberadas = USUARIOS[usuario]["acesso"]
+else:
+    st.error("Usuário ou senha incorretos")
+    st.stop()
+
+
+
+
 
 def formatar_moeda(valor):
     return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
@@ -62,15 +102,15 @@ st.image(logo_path, width=300)
 
 st.title("ACOMPANHAMENTO DE GASTOS PREVISTOS E NÃO PREVISTOS 2026")
 
-#  SENHA DE ACESSO
-SENHA_CORRETA = "CAEMA2026"  #  você define aqui
+# #  SENHA DE ACESSO
+# SENHA_CORRETA = "CAEMA2026"  #  você define aqui
 
-senha = st.text_input("🔐 Digite a senha para acessar o sistema", type="password")
+# senha = st.text_input("🔐 Digite a senha para acessar o sistema", type="password")
 
-if senha != SENHA_CORRETA:
-    if senha != "":
-        st.error("Senha incorreta")
-    st.stop()
+# if senha != SENHA_CORRETA:
+#     if senha != "":
+#         st.error("Senha incorreta")
+#     st.stop()
 
 
 
@@ -107,7 +147,9 @@ df_realizado["MES_NOME"] = df_realizado["MES_NOME"].map(mapa_meses)
 
 # ================== ABAS ==================
 diretorias = ["Dashboard", "PR", "DG", "DE", "DC", "DO"]
-tabs = st.tabs(["Dashboard", "PR", "DG", "DE", "DC", "DO"])
+#tabs = st.tabs(["Dashboard", "PR", "DG", "DE", "DC", "DO"])
+abas = ["Dashboard"] + diretorias_liberadas
+tabs = st.tabs(abas)
 
 # ================== DASHBOARD ==================
 with tabs[0]:
@@ -519,7 +561,8 @@ with tabs[0]:
 
 
 # ================== LOOP ==================
-diretorias = ["PR", "DG", "DE", "DC", "DO"]
+#diretorias = ["PR", "DG", "DE", "DC", "DO"]
+diretorias = diretorias_liberadas
 for i, diretoria in enumerate(diretorias):
 
     with tabs[i + 1]:
