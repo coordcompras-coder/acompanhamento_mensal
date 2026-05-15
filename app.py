@@ -688,7 +688,7 @@ with tabs[0]:
             "ORCAMENTO_AQUISICAO": "R$ {:,.2f}",
             "SALDO_RESTANTE": "R$ {:,.2f}"
         })
-    .background_gradient(subset=["SALDO_RESTANTE"], cmap="Blues")
+    #.background_gradient(subset=["SALDO_RESTANTE"], cmap="Blues")
     .set_properties(**{
         "background-color": "#EAF6FB",  # azul clarinho
         "color": "#062D3C",             # texto preto/cinza escuro
