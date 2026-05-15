@@ -138,6 +138,52 @@ st.markdown("""
         background-color: #F1F5F9;
         border-right: 1px solid #E2E8F0;
     }
+
+
+
+
+
+    
+
+
+    /* LABELS DOS INPUTS */
+    .stTextInput label {
+        color: #000000 !important;
+        font-weight: 600;
+    }
+
+    /* TEXTO DIGITADO */
+    .stTextInput input {
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+    }
+
+    /* PLACEHOLDER */
+    .stTextInput input::placeholder {
+        color: #6B7280 !important;
+    }
+
+    /* BORDA DOS INPUTS */
+    .stTextInput div[data-baseweb="input"] {
+        border: 1px solid #CBD5E1;
+        border-radius: 8px;
+        background-color: #FFFFFF !important;
+    }
+
+    /* SENHA */
+    input[type="password"] {
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
+    }
+
+
+
+
+
+
+
+
+
 </style>
 """, unsafe_allow_html=True)
 
