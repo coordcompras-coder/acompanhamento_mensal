@@ -3,116 +3,200 @@ import pandas as pd
 import os
 import plotly.express as px
 
-USUARIOS = {
-    "admin": {
-        "senha": "admin2026",
-        "acesso": ["PR", "DG", "DE", "DC", "DO"]
-    },
-    "pr": {
-        "senha": "pr2026",
-        "acesso": ["PR", "DG", "DE", "DC", "DO"]
-    },
-    "dg": {
-        "senha": "dg2026",
-        "acesso": ["DG"]
-    },
-    "dc": {
-        "senha": "dc2026",
-        "acesso": ["DC"]
-    },
-    "de": {
-        "senha": "de2026",
-        "acesso": ["DE"]
-    },
-    "do": {
-        "senha": "do2026",
-        "acesso": ["DO"]
-    }
-}
-
-
-usuario = st.text_input("Usuário")
-senha = st.text_input("Senha", type="password")
-
-if usuario in USUARIOS and senha == USUARIOS[usuario]["senha"]:
-    diretorias_liberadas = USUARIOS[usuario]["acesso"]
-else:
-    st.error("Usuário ou senha incorretos")
-    st.stop()
-
-
-
-
-
-def formatar_moeda(valor):
-    return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
-
-
-# CONFIGURAÇÃO
+# ==============================================================================
+# CONFIGURAÇÃO DA PÁGINA (Deve ser o primeiro comando Streamlit)
+# ==============================================================================
 st.set_page_config(
-    page_title="Dashboard de Compras e Serviços",
+    page_title="Dashboard Corporativo de Gastos 2026",
     layout="wide",
-    page_icon="icon/tendencia.png"
+    page_icon="📊"
 )
 
-#CSS PERSONALIZADO
+# ==============================================================================
+# DADOS DE USUÁRIOS E SEGURANÇA
+# ==============================================================================
+USUARIOS = {
+    "admin": {"senha": "admin2026", "acesso": ["PR", "DG", "DE", "DC", "DO"]},
+    "pr": {"senha": "pr2026", "acesso": ["PR", "DG", "DE", "DC", "DO"]},
+    "dg": {"senha": "dg2026*", "acesso": ["DG"]},
+    "dc": {"senha": "dc*2026", "acesso": ["DC"]},
+    "de": {"senha": "*de2026", "acesso": ["DE"]},
+    "do": {"senha": "do2026#", "acesso": ["DO"]}
+}
+
+# Inicialização do estado da sessão
+if 'autenticado' not in st.session_state:
+    st.session_state.autenticado = False
+if 'usuario' not in st.session_state:
+    st.session_state.usuario = None
+if 'diretorias' not in st.session_state:
+    st.session_state.diretorias = []
+
+# ==============================================================================
+# ESTILIZAÇÃO PROFISSIONAL (CSS)
+# ==============================================================================
 st.markdown("""
 <style>
-/*  FUNDO GRADIENTE */
-.stApp {
-    background: linear-gradient(135deg, #1F4E5F, #2F6F89);
-}
+    /* Importação de fonte profissional */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
 
-/*  CARDS (containers) */
-[data-testid="stMetric"], 
-[data-testid="stDataFrame"], 
-[data-testid="stTable"] {
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    padding: 10px;
-}
+    /* FUNDO BRANCO E DESIGN LIMPO */
+    .stApp {
+        background-color: #FFFFFF;
+    }
 
-/*  TEXTO DOS INDICADORES */
-[data-testid="stMetric"] * {
-    color: #000000 !important;
-}
 
-/*  TEXTO PRINCIPAL */
-h1, h2, h3, h4, h5, h6, p, label {
-    color: #FFFFFF !important;
-}
+    /* CABEÇALHO DAS TABELAS */
+    [data-testid="stDataFrame"] thead tr th {
+        background-color: #F4FBFE !important;
+        color: #1F2937 !important;
+        font-weight: bold !important;
+        text-align: center !important;
+    }
 
-/*  TEXTO SECUNDÁRIO */
-span, div {
-    color: #D9E6EC;
-}
+    /* CORPO DAS TABELAS */
+    [data-testid="stDataFrame"] tbody tr td {
+        background-color: #EAF6FB !important;
+        color: #1F2937 !important;
+        text-align: center !important;
+    }
 
-/* 🔝 HEADER TRANSPARENTE */
-[data-testid="stHeader"] {
-    background: transparent;
-}
+            
+    /* ESTILIZAÇÃO DAS TABELAS (AZUL BEBÊ COM LETRAS PRETAS) */
+    [data-testid="stDataFrame"] {
+        background-color: #F0F8FF !important; /* Azul bebê suave */
+        border-radius: 10px;
+        padding: 5px;
+    }
+    
+    div[data-testid="stDataFrame"] div[role="grid"] div[role="columnheader"] {
+        background-color: #E1F5FE !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+    }
+
+    div[data-testid="stDataFrame"] div[role="grid"] div[role="gridcell"] {
+        color: #000000 !important;
+    }
+
+    /* CARDS DE MÉTRICAS */
+    [data-testid="stMetric"] {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 20px !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    
+    [data-testid="stMetricLabel"] {
+        color: #64748b !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    [data-testid="stMetricValue"] {
+        color: #000000 !important;
+        font-weight: 700 !important;
+    }
+
+    /* TÍTULOS E SUBTÍTULOS */
+    h1, h2, h3 {
+        color: #0F172A !important;
+        font-weight: 700 !important;
+    }
+    
+    .main-title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        border-left: 8px solid #89CFF0;
+        padding-left: 1rem;
+    }
+
+    /* BOTÕES */
+    .stButton>button {
+        background-color: #89CFF0;
+        color: #000000;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        padding: 0.5rem 2rem;
+        transition: all 0.3s;
+    }
+    
+    .stButton>button:hover {
+        background-color: #5fbce9;
+        box-shadow: 0 4px 12px rgba(137, 207, 240, 0.4);
+    }
+
+    /* SIDEBAR CUSTOMIZADA */
+    [data-testid="stSidebar"] {
+        background-color: #F1F5F9;
+        border-right: 1px solid #E2E8F0;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# LOGO
+# ==============================================================================
+# FUNÇÕES UTILITÁRIAS
+# ==============================================================================
+def formatar_moeda(valor):
+    return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+# ==============================================================================
+# TELA DE LOGIN
+# ==============================================================================
+if not st.session_state.autenticado:
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        # Tentar carregar logo
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        logo_path = os.path.join(current_dir, "icon", "imagem_caema.png")
+        if os.path.exists(logo_path):
+            st.image(logo_path, width=300)
+        
+        st.markdown("### 🔐 Acesso ao Sistema")
+        with st.form("login_form"):
+            user_input = st.text_input("Usuário")
+            pass_input = st.text_input("Senha", type="password")
+            submit = st.form_submit_button("Entrar")
+            
+            if submit:
+                if user_input in USUARIOS and pass_input == USUARIOS[user_input]["senha"]:
+                    st.session_state.autenticado = True
+                    st.session_state.usuario = user_input
+                    st.session_state.diretorias = USUARIOS[user_input]["acesso"]
+                    st.rerun()
+                else:
+                    st.error("Credenciais inválidas. Por favor, tente novamente.")
+    st.stop()
+
+# ==============================================================================
+# DASHBOARD PRINCIPAL (Só acessível após login)
+# ==============================================================================
+
+# Barra lateral com informações do usuário e Logout
+with st.sidebar:
+    st.markdown(f"### Bem-vindo, **{st.session_state.usuario.upper()}**")
+    st.markdown("---")
+    if st.button("Sair do Sistema"):
+        st.session_state.autenticado = False
+        st.session_state.usuario = None
+        st.rerun()
+
+# Cabeçalho do Dashboard
+# Logo acima do cabeçalho
 current_dir = os.path.dirname(os.path.abspath(__file__))
 logo_path = os.path.join(current_dir, "icon", "imagem_caema.png")
-st.image(logo_path, width=300)
+if os.path.exists(logo_path):
+    st.image(logo_path, width=250)   # ajusta o tamanho conforme preferir
 
-st.title("ACOMPANHAMENTO DE GASTOS PREVISTOS E NÃO PREVISTOS 2026")
-
-# #  SENHA DE ACESSO
-# SENHA_CORRETA = "CAEMA2026"  #  você define aqui
-
-# senha = st.text_input("🔐 Digite a senha para acessar o sistema", type="password")
-
-# if senha != SENHA_CORRETA:
-#     if senha != "":
-#         st.error("Senha incorreta")
-#     st.stop()
-
-
+st.markdown('<h1 class="main-title">ACOMPANHAMENTO DE GASTOS PREVISTOS E NÃO PREVISTOS 2026</h1>', unsafe_allow_html=True)
 
 # ================== CARREGAR EXCEL ==================
 caminho_excel = "https://docs.google.com/spreadsheets/d/1seIaYVZ1D06jPZm9O7yzXbW8hi8tgV2OzBHguyNrfMY/export?format=xlsx"
@@ -145,10 +229,17 @@ mapa_meses = {
 
 df_realizado["MES_NOME"] = df_realizado["MES_NOME"].map(mapa_meses)
 
+# ================== PALETA AZUL BEBÊ ==================
+# Cor de fundo dos gráficos: azul bebê suave
+GRAPH_BG = "rgba(209,223,230,0.30)"
+# Cor das barras/linhas padrão: azul bebê médio
+BABY_BLUE = "#1CACEF"
+# Cor do texto dos gráficos: preto
+FONT_COLOR = "#000000"
+
 # ================== ABAS ==================
 diretorias = ["Dashboard", "PR", "DG", "DE", "DC", "DO"]
-#tabs = st.tabs(["Dashboard", "PR", "DG", "DE", "DC", "DO"])
-abas = ["Dashboard"] + diretorias_liberadas
+abas = ["📊 Visão Geral"] + st.session_state.diretorias
 tabs = st.tabs(abas)
 
 # ================== DASHBOARD ==================
@@ -171,7 +262,7 @@ with tabs[0]:
 #========graficos de linha por diretoria========
     st.markdown("---")
 #AQUISIÇÃO LINHA POR DIRETORIA
-    st.subheader("Evolução Mensal - Aquisições por Diretoria")
+    st.subheader("📈 Evolução Mensal - Aquisições por Diretoria")
 
     df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
 
@@ -187,21 +278,38 @@ with tabs[0]:
         x="MES_NOME",
         y="VALOR_OC",
         color="DIRETORIA",
-        markers=True
+        markers=True,
+        color_discrete_map={
+            "PR": "#103749",
+            "DG": "#15DDDA",
+            "DE": "#E6AF15",
+            "DC": "#7D1AB7",
+            "DO": "#0D562E"
+        }
     )
 
     fig_aq.update_traces(
-        line_shape="spline",  #  linha suave
-        hovertemplate="R$ %{y:,.2f}"
+        line_shape="spline", # suaviza as linhas,  line=dict(width=4) deixa as linhas mais grossas, dash="dash" deixa tracejada, 
+        hovertemplate="R$ %{y:,.2s}"
     )
 
     fig_aq.update_layout(
         yaxis=dict(
             tickprefix="R$ ",
-            tickformat=",.2f",
-            separatethousands=True
+            tickformat=",.2s", # .2f  mostra valores completos com 2 casas decimais, || .0f mostra valores arredondados sem casas decimais  || ",.2s"    # reduzido (k, M, B) || ",.2%"    # porcentagem || ",.2e"    # notação científica  
+            separatethousands=True,
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
         ),
-        separators=",."
+        xaxis=dict(
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        separators=",.",
+        plot_bgcolor=GRAPH_BG,
+        paper_bgcolor=GRAPH_BG,
+        font=dict(color=FONT_COLOR),
+        legend=dict(font=dict(color=FONT_COLOR))
     )
 
     st.plotly_chart(fig_aq, use_container_width=True, key="linha_aquisicao_dir")
@@ -209,7 +317,7 @@ with tabs[0]:
 
     st.markdown("---")
 #SERVIÇOS LINHA POR DIRETORIA
-    st.subheader("Evolução Mensal - Serviços por Diretoria")
+    st.subheader("📈 Evolução Mensal - Serviços por Diretoria")
 
     df_sv = df_realizado[df_realizado["TIPO"] == "SERVICO"]
 
@@ -225,36 +333,75 @@ with tabs[0]:
         x="MES_NOME",
         y="VALOR_OC",
         color="DIRETORIA",
-        markers=True
+        markers=True,
+        color_discrete_map={
+            "PR": "#103749",
+            "DG": "#15DDDA",
+            "DE": "#E6AF15",
+            "DC": "#7D1AB7",
+            "DO": "#0D562E"
+        }
     )
 
     fig_sv.update_traces(
         line_shape="spline",
-        hovertemplate="R$ %{y:,.2f}"
+        hovertemplate="R$ %{y:,.2s}"
     )
 
     fig_sv.update_layout(
         yaxis=dict(
             tickprefix="R$ ",
-            tickformat=",.2f",
-            separatethousands=True
+            tickformat=",.2s", # .2f  mostra valores completos com 2 casas decimais, || .0f mostra valores arredondados sem casas decimais  || ",.2s"    # reduzido (k, M, B) || ",.2%"    # porcentagem || ",.2e"    # notação científica
+            separatethousands=True,
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
         ),
-        separators=",."
+        xaxis=dict(
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        separators=",.",
+        plot_bgcolor=GRAPH_BG,
+        paper_bgcolor=GRAPH_BG,
+        font=dict(color=FONT_COLOR),
+        legend=dict(font=dict(color=FONT_COLOR))
     )
 
     st.plotly_chart(fig_sv, use_container_width=True, key="linha_servico_dir")
 
+
     st.markdown("---")
 #DISTRIBUIÇÃO POR CLASSIFICAÇÃO pizza
-    st.subheader("Distribuição por Classificação %")
+    st.subheader(" Distribuição por Classificação %")
     df_class = (
-        df_realizado[df_realizado["TIPO"] == "AQUISICAO"]  #  FILTRO AQUI
+        df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
         .groupby("CLASSIFICACAO")["VALOR_OC"]
         .sum()
         .reset_index()
         .sort_values("VALOR_OC", ascending=False)
     )
 
+    # Top 10
+    df_top10 = df_class.head(10)
+
+    fig = px.pie(
+        df_top10,
+        names="CLASSIFICACAO",
+        values="VALOR_OC",
+        hole=0.4,
+        color_discrete_sequence=px.colors.sequential.Blues_r
+    )
+    fig.update_traces(
+        textfont=dict(color=FONT_COLOR)
+    )
+    fig.update_layout(
+        plot_bgcolor=GRAPH_BG,
+        paper_bgcolor=GRAPH_BG,
+        font=dict(color=FONT_COLOR),
+        legend=dict(font=dict(color=FONT_COLOR))
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    col1, col2 = st.columns(2)
     # Top 10
     df_top10 = df_class.head(10)
 
@@ -271,25 +418,40 @@ with tabs[0]:
 
 
     # ================== BARRAS ==================
-    st.subheader("Top 10 Classificações R$")
+    st.subheader("💰 Top 10 Classificações R$")
 
     fig_bar = px.bar(
         df_top10,
         x="VALOR_OC",
         y="CLASSIFICACAO",
         orientation="h",
-        text="VALOR_OC"
+        text="VALOR_OC",
+        color_discrete_sequence=[BABY_BLUE]
     )
 
     fig_bar.update_traces(
-        texttemplate="R$ %{text:,.2f}",
-        textposition="inside"
+        texttemplate="R$ %{text:,.2s}",
+        textposition="auto",
+        textfont=dict(color=FONT_COLOR)
     )
 
     fig_bar.update_layout(
-        xaxis_tickprefix="R$ ",
-        xaxis_tickformat=",.2f",
-        yaxis=dict(autorange="reversed")  # maior em cima
+        yaxis=dict(
+            separatethousands=True,
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        xaxis=dict(
+            tickprefix="R$ ",
+            tickformat=",.2s",
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        separators=",.",
+        plot_bgcolor=GRAPH_BG,
+        paper_bgcolor=GRAPH_BG,
+        font=dict(color=FONT_COLOR),
+        legend=dict(font=dict(color=FONT_COLOR))
     )
 
     st.plotly_chart(fig_bar, use_container_width=True)
@@ -298,11 +460,10 @@ with tabs[0]:
 
 
 
-
 #TOP GERÊNCIAS QUE MAIS GASTAM
     st.subheader("TOP 10 GERÊNCIAS QUE MAIS GASTAM")
     df_ger = (
-        df_realizado[df_realizado["TIPO"] == "AQUISICAO"]  #  FILTRO AQUI
+        df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
         .groupby("GERENCIA")["VALOR_OC"]
         .sum()
         .reset_index()
@@ -311,29 +472,45 @@ with tabs[0]:
     )
 
     fig = px.bar(
-        df_ger,  # ou df_top10 (depende do seu nome)
+        df_ger,
         x="VALOR_OC",
         y="GERENCIA",
         orientation="h",
-        text="VALOR_OC"  #  MOSTRA O VALOR
+        text="VALOR_OC",
+        color_discrete_sequence=[BABY_BLUE]
     )
 
     fig.update_traces(
-        texttemplate="R$ %{text:,.2f}",  #  FORMATA EM REAL
-        textposition="inside" #outside para mostrar fora da barra, inside para mostrar dentro da barra e automatic ou auto para deixar o Plotly decidir o melhor lugar para mostrar o valor 
+        texttemplate="R$ %{text:,.2s}",
+        textposition="auto",
+        textfont=dict(color=FONT_COLOR)
     )
 
     fig.update_layout(
-        xaxis_tickprefix="R$ ",
-        xaxis_tickformat=",.2f",
-        yaxis=dict(autorange="reversed")
+        yaxis=dict(
+            separatethousands=True,
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        xaxis=dict(
+            tickprefix="R$ ",
+            tickformat=",.2s",
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        separators=",.",
+        plot_bgcolor=GRAPH_BG,
+        paper_bgcolor=GRAPH_BG,
+        font=dict(color=FONT_COLOR),
+        legend=dict(font=dict(color=FONT_COLOR))
     )
 
     st.plotly_chart(fig, use_container_width=True)
 
+
     st.markdown("---")
 #REALIZADO vs NÃO PREVISTO (impacto)
-    st.subheader("REALIZADO vs NÃO PREVISTO (impacto)")
+    st.subheader("REALIZADO vs NÃO PREVISTO (Aquisição)")
     df_prev = (
     df_realizado.groupby("PREVISTO")["VALOR_OC"]
     .sum()
@@ -344,17 +521,33 @@ with tabs[0]:
         x="PREVISTO",
         y="VALOR_OC",
         color="PREVISTO",
-        text="VALOR_OC"  #  MOSTRA O VALOR
+        text="VALOR_OC",
+        color_discrete_sequence=px.colors.sequential.Blues_r
     )
 
     fig.update_traces(
-        texttemplate="R$ %{text:,.2f}",  #  FORMATA
-        textposition="outside"
+        texttemplate="R$ %{text:,.2f}",
+        textposition="outside",
+        textfont=dict(color=FONT_COLOR)
     )
 
     fig.update_layout(
-        yaxis_tickprefix="R$ ",
-        yaxis_tickformat=",.2f"
+        yaxis=dict(
+            tickprefix="R$ ",
+            tickformat=",.2f",
+            separatethousands=True,
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        xaxis=dict(
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        separators=",.",
+        plot_bgcolor=GRAPH_BG,
+        paper_bgcolor=GRAPH_BG,
+        font=dict(color=FONT_COLOR),
+        legend=dict(font=dict(color=FONT_COLOR))
     )
 
     st.plotly_chart(fig, use_container_width=True)
@@ -378,31 +571,50 @@ with tabs[0]:
     )
 
     fig.update_traces(line_shape="spline")
+    fig.update_layout(
+        plot_bgcolor=GRAPH_BG,
+        paper_bgcolor=GRAPH_BG,
+        font=dict(color=FONT_COLOR),
+        legend=dict(font=dict(color=FONT_COLOR)),
+        yaxis=dict(
+            tickprefix="R$ ",
+            tickformat=",.2s",
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        xaxis=dict(
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        separators=",."
+    )
 
     st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("---")
-#OC vs NF (controle financeiro)
-    st.subheader("OC vs NF (Aquisição) por Diretoria vs Orçamento")
 
-    #  FILTRAR APENAS AQUISIÇÃO
+#OC vs NF (controle financeiro)
+
+    st.subheader("📊 OC vs NF (Aquisição) por Diretoria vs Orçamento")
+
+    # FILTRAR APENAS AQUISIÇÃO
     df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
 
-    #  AGRUPAR OC e NF
+    # AGRUPAR OC e NF
     df_oc_nf = (
         df_aq.groupby("DIRETORIA")[["VALOR_OC", "VALOR_NF"]]
         .sum()
         .reset_index()
     )
 
-    #  ORÇAMENTO (já é aquisição)
+    # ORÇAMENTO (já é aquisição)
     df_orc = (
         df_orcamento.groupby("DIRETORIA")["ORCAMENTO_AQUISICAO"]
         .sum()
         .reset_index()
     )
 
-    #  MERGE
+    # MERGE
     df_final = df_oc_nf.merge(df_orc, on="DIRETORIA", how="left")
 
     # GRÁFICO DE BARRAS
@@ -411,39 +623,56 @@ with tabs[0]:
         x="DIRETORIA",
         y=["VALOR_OC", "VALOR_NF"],
         barmode="group",
-        text_auto=True
+        text_auto=True,
+        color_discrete_sequence=px.colors.sequential.Blues_r
     )
 
-    #  TEXTO FORA DA BARRA
+    # TEXTO FORA DA BARRA
     fig.update_traces(
-        texttemplate="R$ %{y:,.2f}",
-        textposition="outside"
+        texttemplate="R$ %{y:,.2s}",
+        textposition="outside",
+        textfont=dict(color=FONT_COLOR)
     )
 
-    #  LINHA DE ORÇAMENTO (SUAVE)
+    # LINHA DE ORÇAMENTO (SUAVE)
     fig.add_scatter(
         x=df_final["DIRETORIA"],
         y=df_final["ORCAMENTO_AQUISICAO"],
         mode="lines+markers",
         name="Orçamento Aquisição",
         line=dict(
-            shape="spline",   # mantém a linha suave
-            dash="solid",     #  linha contínua
-            color="red",      #  cor vermelha
+            shape="spline",
+            dash="solid",
+            color="red",
             width=3
         )
     )
 
-    # 🔹 FORMATAÇÃO
+    # FORMATAÇÃO
     fig.update_layout(
-        yaxis_tickprefix="R$ ",
-        yaxis_tickformat=",.2f"
+        yaxis=dict(
+            tickprefix="R$ ",
+            tickformat=",.2s",
+            separatethousands=True,
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        xaxis=dict(
+            tickfont=dict(color=FONT_COLOR),
+            title_font=dict(color=FONT_COLOR)
+        ),
+        separators=",.",
+        plot_bgcolor=GRAPH_BG,
+        paper_bgcolor=GRAPH_BG,
+        font=dict(color=FONT_COLOR),
+        legend=dict(font=dict(color=FONT_COLOR))
     )
 
     st.plotly_chart(fig, use_container_width=True)
 
 #tabela de conferencia entre OC e NF
-    st.subheader("Conferência: Orçado vs Realizado por Diretoria")
+# 📊 Conferência: Orçado vs Realizado por Diretoria
+    st.subheader("📊 Conferência: Orçado vs Realizado por Diretoria")
 
     df_conf = (
         df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
@@ -458,115 +687,116 @@ with tabs[0]:
         how="left"
     )
 
-    df_conf["DIFERENCA"] = df_conf["VALOR_OC"] - df_conf["ORCAMENTO_AQUISICAO"]
+    # Saldo restante (pode ser negativo)
+    df_conf["SALDO_RESTANTE"] = df_conf["ORCAMENTO_AQUISICAO"] - df_conf["VALOR_OC"]
 
+    # Estilo da tabela
     st.dataframe(
-        df_conf.style.format({
+        df_conf[["DIRETORIA", "VALOR_OC", "ORCAMENTO_AQUISICAO", "SALDO_RESTANTE"]]
+        .style
+        .hide(axis="index")
+        .format({
             "VALOR_OC": "R$ {:,.2f}",
             "ORCAMENTO_AQUISICAO": "R$ {:,.2f}",
-            "DIFERENCA": "R$ {:,.2f}"
+            "SALDO_RESTANTE": "R$ {:,.2f}"
+        })
+    .background_gradient(subset=["SALDO_RESTANTE"], cmap="Blues")
+    .set_properties(**{
+        "background-color": "#EAF6FB",  # azul clarinho
+        "color": "#062D3C",             # texto preto/cinza escuro
+        "border-color": "#D6EAF2",
+        "text-align": "center"
+    }),
+        use_container_width=True
+    )
+
+    st.write("🔎 Se o saldo restante for negativo, significa que a diretoria já estourou o orçamento.")
+    st.caption("📌 Este relatório considera apenas dados de AQUISIÇÃO")
+    st.markdown("---")
+
+    # ================== INSIGHTS MENSAIS ==================
+    st.subheader("🧠 Insights Mensais")
+
+    # Agrupa por mês
+    df_mensal = (
+        df_realizado
+        .groupby(["MES_NUM", "MES_NOME"])["VALOR_OC"]
+        .sum()
+        .reset_index()
+        .sort_values("MES_NUM")
+    )
+
+    insights = []
+
+    for _, row in df_mensal.iterrows():
+
+        mes = row["MES_NOME"]
+
+        # Filtra mês atual
+        df_mes = df_realizado[df_realizado["MES_NOME"] == mes]
+
+        total_mes = df_mes["VALOR_OC"].sum()
+
+        # Diretoria que mais gastou
+        top_dir = (
+            df_mes.groupby("DIRETORIA")["VALOR_OC"]
+            .sum()
+            .sort_values(ascending=False)
+        )
+
+        diretoria_top = top_dir.index[0]
+        valor_dir = top_dir.iloc[0]
+
+        # Classificação que mais gastou
+        top_class = (
+            df_mes.groupby("CLASSIFICACAO")["VALOR_OC"]
+            .sum()
+            .sort_values(ascending=False)
+        )
+
+        class_top = top_class.index[0]
+        valor_class = top_class.iloc[0]
+
+        # Percentual não previsto
+        nao_prev = df_mes[df_mes["PREVISTO"] == "NAO"]["VALOR_OC"].sum()
+
+        perc_nao_prev = 0
+
+        if total_mes > 0:
+            perc_nao_prev = (nao_prev / total_mes) * 100
+
+        insights.append({
+            "MÊS": mes,
+            "TOTAL": formatar_moeda(total_mes),
+            "TOP DIRETORIA": diretoria_top,
+            "VALOR DIRETORIA": formatar_moeda(valor_dir),
+            "TOP CLASSIFICAÇÃO": class_top,
+            "NÃO PREVISTO %": f"{perc_nao_prev:.1f}%"
+        })
+
+    # DataFrame final
+    df_insights = pd.DataFrame(insights)
+
+    # Estilo
+    st.dataframe(
+        df_insights.style
+        .hide(axis="index")
+        .set_properties(**{
+            "background-color": "#EAF6FB",
+            "color": "#1F2937",
+            "border-color": "#D6EAF2",
+            "text-align": "center"
         }),
         use_container_width=True
     )
-    
-    st.write("Se a diferença for positiva, estourou. Se for negativa, ainda tem saldo ")
-    st.caption("📌 Este gráfico considera apenas dados de AQUISIÇÃO")
-
-    st.markdown("---")
-#INSIGHTS AUTOMÁTICOS
-    st.subheader("Insights Automáticos")
-
-    # 🔹 Diretoria que mais gastou (AQUISIÇÃO)
-    df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
-
-    top_dir = (
-        df_aq.groupby("DIRETORIA")["VALOR_OC"]
-        .sum()
-        .sort_values(ascending=False)
-        .reset_index()
-    )
-
-    if not top_dir.empty:
-        dir_top = top_dir.iloc[0]
-
-        st.info(f"Diretoria com maior gasto em aquisições: **{dir_top['DIRETORIA']}** "
-                f"com {formatar_moeda(dir_top['VALOR_OC'])}")
-
-    # 🔹 Mês com maior gasto
-    top_mes = (
-        df_realizado.groupby(["MES_NUM", "MES_NOME"])["VALOR_OC"]
-        .sum()
-        .reset_index()
-        .sort_values("VALOR_OC", ascending=False)
-    )
-
-    if not top_mes.empty:
-        mes_top = top_mes.iloc[0]
-
-        st.info(f"Mês com maior gasto: **{mes_top['MES_NOME']}** "
-                f"com {formatar_moeda(mes_top['VALOR_OC'])}")
-
-    # 🔹 % de não previsto
-    total = df_realizado["VALOR_OC"].sum()
-    nao_prev = df_realizado[df_realizado["PREVISTO"] == "NAO"]["VALOR_OC"].sum()
-
-    if total > 0:
-        perc_nao_prev = (nao_prev / total) * 100
-
-        st.warning(f"⚠️ {perc_nao_prev:.1f}% dos gastos são NÃO PREVISTOS")
-
-    # 🔹 Diretoria que estourou orçamento
-    df_conf = (
-        df_aq.groupby("DIRETORIA")["VALOR_OC"]
-        .sum()
-        .reset_index()
-    )
-
-    df_conf = df_conf.merge(
-        df_orcamento[["DIRETORIA", "ORCAMENTO_AQUISICAO"]],
-        on="DIRETORIA",
-        how="left"
-    )
-
-    df_conf["DIFERENCA"] = df_conf["VALOR_OC"] - df_conf["ORCAMENTO_AQUISICAO"]
-
-    estouro = df_conf[df_conf["DIFERENCA"] > 0]
-
-    if not estouro.empty:
-        for _, row in estouro.iterrows():
-            st.error(f"🚨 {row['DIRETORIA']} ultrapassou o orçamento em "
-                    f"{formatar_moeda(row['DIFERENCA'])}")
-    else:
-        st.success("✅ Nenhuma diretoria ultrapassou o orçamento")
-
-    # 🔹 Classificação que mais consome (AQUISIÇÃO)
-    top_class = (
-        df_aq.groupby("CLASSIFICACAO")["VALOR_OC"]
-        .sum()
-        .sort_values(ascending=False)
-        .reset_index()
-    )
-
-    if not top_class.empty:
-        class_top = top_class.iloc[0]
-
-        st.info(f"📦 Maior tipo de gasto: **{class_top['CLASSIFICACAO']}** "
-                f"com {formatar_moeda(class_top['VALOR_OC'])}")
-
-
-
-
-
-
 
 
 # ================== LOOP ==================
-#diretorias = ["PR", "DG", "DE", "DC", "DO"]
-diretorias = diretorias_liberadas
-for i, diretoria in enumerate(diretorias):
+for i, diretoria in enumerate(st.session_state.diretorias):
 
-    with tabs[i + 1]:
-        st.header(f"Diretoria {diretoria}")
+
+    with tabs[i + 1]:  # +1 porque a primeira aba é o dashboard geral
+        st.header(f"📊 Diretoria {diretoria}")
 
         # FILTROS
         prev = df_previsto[df_previsto["DIRETORIA"] == diretoria]
@@ -584,10 +814,9 @@ for i, diretoria in enumerate(diretorias):
         nao_previsto = real[real["PREVISTO"] == "NAO"]["VALOR_OC"].sum()
 
         # ================== KPIs ==================
-        st.subheader("Indicadores")
+        st.subheader("📊 Indicadores")
 
         col1, col2, col3 = st.columns(3)
-
 
         col1.metric("Orçamento Aquisição", formatar_moeda(orc_aquisicao))
         col2.metric("Realizado", formatar_moeda(realizado_total))
@@ -596,7 +825,7 @@ for i, diretoria in enumerate(diretorias):
         st.markdown("---")
 
         # ================== GRÁFICO BARRAS ==================
-        st.subheader("Comparativo")
+        st.subheader("📈 Comparativo")
 
         df_grafico = pd.DataFrame({
             "Categoria": ["Orçamento", "Realizado Previsto", "Não Previsto"],
@@ -608,17 +837,37 @@ for i, diretoria in enumerate(diretorias):
             x="Categoria",
             y="Valor",
             text="Valor",
-            color="Categoria"
+            color="Categoria",
+            color_discrete_map={
+                "Orçamento": "#0F4A07",          # verde
+                "Realizado Previsto": "#063432", # azul 
+                "Não Previsto": "#A20D0D"       # vermelho
+            }
         )
 
         fig_bar.update_traces(
             texttemplate="R$ %{y:,.2f}",
-            textposition="outside"
+            textposition="outside",
+            textfont=dict(color=FONT_COLOR)
         )
 
         fig_bar.update_layout(
-            yaxis_tickprefix="R$ ",
-            yaxis_tickformat=",.2f"
+            yaxis=dict(
+                tickprefix="R$ ",
+                tickformat=",.2f",
+                separatethousands=True,
+                tickfont=dict(color=FONT_COLOR),
+                title_font=dict(color=FONT_COLOR)
+            ),
+            xaxis=dict(
+                tickfont=dict(color=FONT_COLOR),
+                title_font=dict(color=FONT_COLOR)
+            ),
+            separators=",.",
+            plot_bgcolor=GRAPH_BG,
+            paper_bgcolor=GRAPH_BG,
+            font=dict(color=FONT_COLOR),
+            legend=dict(font=dict(color=FONT_COLOR))
         )
 
         st.plotly_chart(fig_bar, use_container_width=True)
@@ -626,7 +875,7 @@ for i, diretoria in enumerate(diretorias):
         st.markdown("---")
 
         # ================== GRÁFICO LINHA ==================
-        st.subheader("Evolução Mensal")
+        st.subheader("📈 Evolução Mensal")
 
         df_linha = (
             real.groupby(["MES_NUM", "MES_NOME", "PREVISTO"])["VALOR_OC"]
@@ -634,20 +883,16 @@ for i, diretoria in enumerate(diretorias):
             .reset_index()
             .sort_values("MES_NUM")
         )
-        #fig linha começou a apresentar os meses bagunçados e muudei o código vou testar agora esse novo codigo
+
         fig_linha = px.line(
             df_linha,
             x="MES_NOME",
             y="VALOR_OC",
             color="PREVISTO",
             markers=True,
-            category_orders={
-                "MES_NOME": ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-                            "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
-            },
             color_discrete_map={
-                "SIM": "#00FFAA",
-                "NAO": "#FF4B4B"
+                "SIM": "#0F4A07",   # verde
+                "NAO": "#C61313"    # vermelho
             }
         )
 
@@ -660,16 +905,26 @@ for i, diretoria in enumerate(diretorias):
         fig_linha.update_layout(
             yaxis=dict(
                 tickprefix="R$ ",
-                tickformat=",.2f",
-                separatethousands=True
+                tickformat=",.2s",
+                separatethousands=True,
+                tickfont=dict(color=FONT_COLOR),
+                title_font=dict(color=FONT_COLOR)
             ),
-            separators=",."
+            xaxis=dict(
+                tickfont=dict(color=FONT_COLOR),
+                title_font=dict(color=FONT_COLOR)
+            ),
+            separators=",.",
+            plot_bgcolor=GRAPH_BG,
+            paper_bgcolor=GRAPH_BG,
+            font=dict(color=FONT_COLOR),
+            legend=dict(font=dict(color=FONT_COLOR))
         )
 
         fig_linha.update_yaxes(
             tickprefix="R$ ",
             separatethousands=True
-        )        
+        )
 
         st.plotly_chart(fig_linha, use_container_width=True)
 
@@ -679,20 +934,30 @@ for i, diretoria in enumerate(diretorias):
         st.subheader("📋 Realizado por Mês")
 
         tabela_mensal = (
-            real
+            real[real["PREVISTO"] == "SIM"]
             .groupby(["MES_NUM", "MES_NOME"])["VALOR_OC"]
             .sum()
             .reset_index()
             .sort_values("MES_NUM")
         )
-
+        
+        
         st.dataframe(
-        tabela_mensal[["MES_NOME", "VALOR_OC"]]
-        .style.format({
-            "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        }),
-        use_container_width=True
+            tabela_mensal[["MES_NOME", "VALOR_OC"]]
+            .style
+            .hide(axis="index")
+            .format({
+                "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+            })
+            .set_properties(**{
+                "background-color": "#EAF6FB",
+                "color": "#1F2937",
+                "border-color": "#D6EAF2",
+                "text-align": "center"
+            }),
+            use_container_width=True
         )
+        
 
         st.markdown("---")
 
@@ -703,8 +968,14 @@ for i, diretoria in enumerate(diretorias):
 
         st.dataframe(
         tabela_nao_previsto[["GERENCIA", "DESCRICAO", "TIPO", "VALOR_OC"]]
-        .style.format({
-            "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        .style
+        .hide(axis="index")
+        .format({ "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")})
+        .set_properties(**{
+            "background-color": "#FDEDEC",
+            "color": "#C53030",
+            "border-color": "#F5C6CB",
+            "text-align": "center"
         }),
         use_container_width=True
     )
@@ -714,7 +985,7 @@ for i, diretoria in enumerate(diretorias):
 
         st.markdown("---")
 
-        st.subheader("Compras por Mês (Detalhado)")
+        st.subheader("📊 Compras por Mês (Detalhado)")
 
         tabela_total = (
             real[["MES_NUM", "MES_NOME", "DESCRICAO", "VALOR_OC"]]
@@ -723,17 +994,22 @@ for i, diretoria in enumerate(diretorias):
 
         st.dataframe(
             tabela_total[["MES_NOME", "DESCRICAO", "VALOR_OC"]]
-        .style.format({
-            "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        }),
+            .style
+            .hide(axis="index")
+            .format({ "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")})
+            .set_properties(**{
+                "background-color": "#EAF6FB",
+                "color": "#09242B",
+                "border-color": "#D6EAF2",
+                "text-align": "center"
+            }),
             use_container_width=True
         )
 
 
-
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: gray;'>"
+    "<div style='text-align: center; color: #000000;'>"
     "Sistema conectado ao Excel | Atualização automática de dados"
     "</div>",
     unsafe_allow_html=True
