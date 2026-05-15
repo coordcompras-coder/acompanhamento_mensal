@@ -37,152 +37,291 @@ if 'diretorias' not in st.session_state:
 # ==============================================================================
 st.markdown("""
 <style>
-    /* Importação de fonte profissional */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
-    }
 
-    /* FUNDO BRANCO E DESIGN LIMPO */
-    .stApp {
-        background-color: #FFFFFF;
-    }
+/* =========================================================
+   IMPORTAÇÃO DE FONTE
+========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
+/* =========================================================
+   FONTE GLOBAL
+========================================================= */
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
 
-    /* CABEÇALHO DAS TABELAS */
-    [data-testid="stDataFrame"] thead tr th {
-        background-color: #F4FBFE !important;
-        color: #1F2937 !important;
-        font-weight: bold !important;
-        text-align: center !important;
-    }
+/* =========================================================
+   FUNDO PRINCIPAL
+========================================================= */
+.stApp {
+    background-color: #FFFFFF;
+}
 
-    /* CORPO DAS TABELAS */
-    [data-testid="stDataFrame"] tbody tr td {
-        background-color: #EAF6FB !important;
-        color: #1F2937 !important;
-        text-align: center !important;
-    }
+/* =========================================================
+   TEXTOS GERAIS
+========================================================= */
+p, span, label, div {
+    color: #000000;
+}
 
-            
-    /* ESTILIZAÇÃO DAS TABELAS (AZUL BEBÊ COM LETRAS PRETAS) */
-    [data-testid="stDataFrame"] {
-        background-color: #F0F8FF !important; /* Azul bebê suave */
-        border-radius: 10px;
-        padding: 5px;
-    }
-    
-    div[data-testid="stDataFrame"] div[role="grid"] div[role="columnheader"] {
-        background-color: #E1F5FE !important;
-        color: #000000 !important;
-        font-weight: bold !important;
-    }
+/* =========================================================
+   TÍTULOS
+========================================================= */
+h1, h2, h3, h4, h5, h6 {
+    color: #0F172A !important;
+    font-weight: 700 !important;
+}
 
-    div[data-testid="stDataFrame"] div[role="grid"] div[role="gridcell"] {
-        color: #000000 !important;
-    }
+.main-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    border-left: 8px solid #89CFF0;
+    padding-left: 1rem;
+}
 
-    /* CARDS DE MÉTRICAS */
-    [data-testid="stMetric"] {
-        background: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-radius: 12px;
-        padding: 20px !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    
-    [data-testid="stMetricLabel"] {
-        color: #64748b !important;
-        font-weight: 600 !important;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-    
-    [data-testid="stMetricValue"] {
-        color: #000000 !important;
-        font-weight: 700 !important;
-    }
+/* =========================================================
+   SIDEBAR
+========================================================= */
+[data-testid="stSidebar"] {
+    background-color: #F1F5F9;
+    border-right: 1px solid #E2E8F0;
+}
 
-    /* TÍTULOS E SUBTÍTULOS */
-    h1, h2, h3 {
-        color: #0F172A !important;
-        font-weight: 700 !important;
-    }
-    
-    .main-title {
-        font-size: 2.5rem;
-        margin-bottom: 2rem;
-        border-left: 8px solid #89CFF0;
-        padding-left: 1rem;
-    }
+/* textos sidebar */
+[data-testid="stSidebar"] * {
+    color: #000000 !important;
+}
 
-    /* BOTÕES */
-    .stButton>button {
-        background-color: #89CFF0;
-        color: #000000;
-        border-radius: 8px;
-        border: none;
-        font-weight: 600;
-        padding: 0.5rem 2rem;
-        transition: all 0.3s;
-    }
-    
-    .stButton>button:hover {
-        background-color: #5fbce9;
-        box-shadow: 0 4px 12px rgba(137, 207, 240, 0.4);
-    }
+/* seta recolher sidebar */
+button[kind="header"] svg {
+    fill: #000000 !important;
+}
 
-    /* SIDEBAR CUSTOMIZADA */
-    [data-testid="stSidebar"] {
-        background-color: #F1F5F9;
-        border-right: 1px solid #E2E8F0;
-    }
+/* =========================================================
+   TABS
+========================================================= */
 
+/* container tabs */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 10px;
+    background-color: #F1F5F9;
+    padding: 10px;
+    border-radius: 10px;
+}
 
+/* tabs normais */
+.stTabs [data-baseweb="tab"] {
+    background-color: #D9EEF7;
+    color: #000000 !important;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    border: none;
+}
 
+/* hover */
+.stTabs [data-baseweb="tab"]:hover {
+    background-color: #89CFF0;
+    color: #000000 !important;
+}
 
+/* tab ativa */
+.stTabs [aria-selected="true"] {
+    background-color: #1CACEF !important;
+    color: #FFFFFF !important;
+}
 
-    
+/* =========================================================
+   BOTÕES
+========================================================= */
+.stButton>button {
+    background-color: #89CFF0;
+    color: #000000 !important;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    padding: 0.5rem 2rem;
+    transition: all 0.3s;
+}
 
+.stButton>button:hover {
+    background-color: #5fbce9;
+    box-shadow: 0 4px 12px rgba(137, 207, 240, 0.4);
+}
 
-    /* LABELS DOS INPUTS */
-    .stTextInput label {
-        color: #000000 !important;
-        font-weight: 600;
-    }
+/* =========================================================
+   INPUTS LOGIN
+========================================================= */
 
-    /* TEXTO DIGITADO */
-    .stTextInput input {
-        color: #000000 !important;
-        background-color: #FFFFFF !important;
-    }
+/* labels */
+.stTextInput label {
+    color: #000000 !important;
+    font-weight: 600;
+}
 
-    /* PLACEHOLDER */
-    .stTextInput input::placeholder {
-        color: #6B7280 !important;
-    }
+/* input */
+.stTextInput input {
+    color: #000000 !important;
+    background-color: #FFFFFF !important;
+}
 
-    /* BORDA DOS INPUTS */
-    .stTextInput div[data-baseweb="input"] {
-        border: 1px solid #CBD5E1;
-        border-radius: 8px;
-        background-color: #FFFFFF !important;
-    }
+/* placeholder */
+.stTextInput input::placeholder {
+    color: #6B7280 !important;
+}
 
-    /* SENHA */
-    input[type="password"] {
-        color: #000000 !important;
-        background-color: #FFFFFF !important;
-    }
+/* borda */
+.stTextInput div[data-baseweb="input"] {
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    background-color: #FFFFFF !important;
+}
 
+/* senha */
+input[type="password"] {
+    color: #000000 !important;
+    background-color: #FFFFFF !important;
+}
 
+/* =========================================================
+   MÉTRICAS
+========================================================= */
+[data-testid="stMetric"] {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 20px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
 
+[data-testid="stMetricLabel"] {
+    color: #64748b !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
 
+[data-testid="stMetricValue"] {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
 
+/* =========================================================
+   DATAFRAMES / TABELAS
+========================================================= */
 
+/* tabela geral */
+[data-testid="stDataFrame"] {
+    background-color: #F0F8FF !important;
+    border-radius: 10px;
+    padding: 5px;
+}
 
+/* cabeçalho */
+[data-testid="stDataFrame"] thead tr th {
+    background-color: #F4FBFE !important;
+    color: #1F2937 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+}
 
+/* corpo */
+[data-testid="stDataFrame"] tbody tr td {
+    background-color: #EAF6FB !important;
+    color: #1F2937 !important;
+    text-align: center !important;
+}
+
+/* grid interno */
+div[data-testid="stDataFrame"] div[role="grid"] div[role="columnheader"] {
+    background-color: #E1F5FE !important;
+    color: #000000 !important;
+    font-weight: bold !important;
+}
+
+div[data-testid="stDataFrame"] div[role="grid"] div[role="gridcell"] {
+    color: #000000 !important;
+}
+
+/* =========================================================
+   TEXTOS STREAMLIT
+========================================================= */
+
+/* st.write */
+.stMarkdown p {
+    color: #000000 !important;
+}
+
+/* caption */
+[data-testid="stCaptionContainer"] {
+    color: #000000 !important;
+}
+
+/* info */
+[data-testid="stAlert"] {
+    color: #000000 !important;
+}
+
+/* =========================================================
+   EXPANDERS
+========================================================= */
+.streamlit-expanderHeader {
+    color: #000000 !important;
+    font-weight: 600;
+}
+
+/* =========================================================
+   SELECTBOX
+========================================================= */
+.stSelectbox label {
+    color: #000000 !important;
+}
+
+.stSelectbox div[data-baseweb="select"] {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+}
+
+/* =========================================================
+   MULTISELECT
+========================================================= */
+.stMultiSelect label {
+    color: #000000 !important;
+}
+
+/* =========================================================
+   RADIO
+========================================================= */
+.stRadio label {
+    color: #000000 !important;
+}
+
+/* =========================================================
+   CHECKBOX
+========================================================= */
+.stCheckbox label {
+    color: #000000 !important;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #89CFF0;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1CACEF;
+}
 
 </style>
 """, unsafe_allow_html=True)
