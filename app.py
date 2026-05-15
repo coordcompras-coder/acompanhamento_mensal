@@ -160,7 +160,7 @@ if not st.session_state.autenticado:
         if os.path.exists(logo_path):
             st.image(logo_path, width=300)
         
-        st.markdown("### 🔐 Acesso ao Sistema")
+        st.markdown("### Acesso ao Sistema")
         with st.form("login_form"):
             user_input = st.text_input("Usuário")
             pass_input = st.text_input("Senha", type="password")
@@ -239,7 +239,7 @@ FONT_COLOR = "#000000"
 
 # ================== ABAS ==================
 #diretorias = ["Dashboard", "PR", "DG", "DE", "DC", "DO"]
-abas = ["📊 Visão Geral"] + st.session_state.diretorias
+abas = ["Visão Geral"] + st.session_state.diretorias
 tabs = st.tabs(abas)
 
 # ================== DASHBOARD ==================
@@ -262,7 +262,7 @@ with tabs[0]:
 #========graficos de linha por diretoria========
     st.markdown("---")
 #AQUISIÇÃO LINHA POR DIRETORIA
-    st.subheader("📈 Evolução Mensal - Aquisições por Diretoria")
+    st.subheader("Evolução Mensal - Aquisições por Diretoria")
 
     df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
 
@@ -317,7 +317,7 @@ with tabs[0]:
 
     st.markdown("---")
 #SERVIÇOS LINHA POR DIRETORIA
-    st.subheader("📈 Evolução Mensal - Serviços por Diretoria")
+    st.subheader("Evolução Mensal - Serviços por Diretoria")
 
     df_sv = df_realizado[df_realizado["TIPO"] == "SERVICO"]
 
@@ -584,7 +584,7 @@ with tabs[0]:
 
 #OC vs NF (controle financeiro)
 
-    st.subheader("📊 OC vs NF (Aquisição) por Diretoria vs Orçamento")
+    st.subheader("OC vs NF (Aquisição) por Diretoria vs Orçamento")
 
     # FILTRAR APENAS AQUISIÇÃO
     df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
@@ -661,7 +661,7 @@ with tabs[0]:
 
 #tabela de conferencia entre OC e NF
 # 📊 Conferência: Orçado vs Realizado por Diretoria
-    st.subheader("📊 Conferência: Orçado vs Realizado por Diretoria")
+    st.subheader("Conferência: Orçado vs Realizado por Diretoria")
 
     df_conf = (
         df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
@@ -703,7 +703,7 @@ with tabs[0]:
     st.markdown("---")
 
     # ================== INSIGHTS MENSAIS ==================
-    st.subheader("🧠 Insights Mensais")
+    st.subheader("Insights Mensais")
 
     # Agrupa por mês
     df_mensal = (
@@ -783,7 +783,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
 
 
     with tabs[i + 1]:  # +1 porque a primeira aba é o dashboard geral
-        st.header(f"📊 Diretoria {diretoria}")
+        st.header(f" Diretoria {diretoria}")
 
         # FILTROS
         prev = df_previsto[df_previsto["DIRETORIA"] == diretoria]
@@ -801,7 +801,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         nao_previsto = real[real["PREVISTO"] == "NAO"]["VALOR_OC"].sum()
 
         # ================== KPIs ==================
-        st.subheader("📊 Indicadores")
+        st.subheader("Indicadores")
 
         col1, col2, col3 = st.columns(3)
 
@@ -812,7 +812,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         st.markdown("---")
 
         # ================== GRÁFICO BARRAS ==================
-        st.subheader("📈 Comparativo")
+        st.subheader("Comparativo")
 
         df_grafico = pd.DataFrame({
             "Categoria": ["Orçamento", "Realizado Previsto", "Não Previsto"],
@@ -862,7 +862,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         st.markdown("---")
 
         # ================== GRÁFICO LINHA ==================
-        st.subheader("📈 Evolução Mensal")
+        st.subheader("Evolução Mensal")
 
         df_linha = (
             real.groupby(["MES_NUM", "MES_NOME", "PREVISTO"])["VALOR_OC"]
@@ -918,7 +918,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         st.markdown("---")
 
         # ================== TABELA MENSAL ==================
-        st.subheader("📋 Realizado por Mês")
+        st.subheader("Realizado por Mês")
 
         tabela_mensal = (
             real[real["PREVISTO"] == "SIM"]
@@ -948,7 +948,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         st.markdown("---")
 
         # ================== TABELA NÃO PREVISTO ==================
-        st.subheader("⚠️ Não Previsto")
+        st.subheader("Não Previsto")
 
         tabela_nao_previsto = real[real["PREVISTO"] == "NAO"]
 
@@ -970,7 +970,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
 
         st.markdown("---")
 
-        st.subheader("📊 Compras por Mês (Detalhado)")
+        st.subheader("Compras por Mês (Detalhado)")
 
         tabela_total = (
             real[["MES_NUM", "MES_NOME", "DESCRICAO", "VALOR_OC"]]
