@@ -238,7 +238,7 @@ BABY_BLUE = "#1CACEF"
 FONT_COLOR = "#000000"
 
 # ================== ABAS ==================
-diretorias = ["Dashboard", "PR", "DG", "DE", "DC", "DO"]
+#diretorias = ["Dashboard", "PR", "DG", "DE", "DC", "DO"]
 abas = ["📊 Visão Geral"] + st.session_state.diretorias
 tabs = st.tabs(abas)
 
@@ -381,7 +381,7 @@ with tabs[0]:
         .sort_values("VALOR_OC", ascending=False)
     )
 
-    # Top 10
+    # Top 10 CLASSIFICACAO
     df_top10 = df_class.head(10)
 
     fig = px.pie(
@@ -401,18 +401,7 @@ with tabs[0]:
         legend=dict(font=dict(color=FONT_COLOR))
     )
     st.plotly_chart(fig, use_container_width=True)
-    col1, col2 = st.columns(2)
-    # Top 10
-    df_top10 = df_class.head(10)
-
-    fig = px.pie(
-        df_top10,
-        names="CLASSIFICACAO",
-        values="VALOR_OC",
-        hole=0.4
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+ 
 
     st.markdown("---")
 
@@ -694,7 +683,6 @@ with tabs[0]:
     st.dataframe(
         df_conf[["DIRETORIA", "VALOR_OC", "ORCAMENTO_AQUISICAO", "SALDO_RESTANTE"]]
         .style
-        .hide(axis="index")
         .format({
             "VALOR_OC": "R$ {:,.2f}",
             "ORCAMENTO_AQUISICAO": "R$ {:,.2f}",
@@ -780,7 +768,6 @@ with tabs[0]:
     # Estilo
     st.dataframe(
         df_insights.style
-        .hide(axis="index")
         .set_properties(**{
             "background-color": "#EAF6FB",
             "color": "#1F2937",
@@ -945,7 +932,6 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         st.dataframe(
             tabela_mensal[["MES_NOME", "VALOR_OC"]]
             .style
-            .hide(axis="index")
             .format({
                 "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
             })
@@ -969,7 +955,6 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         st.dataframe(
         tabela_nao_previsto[["GERENCIA", "DESCRICAO", "TIPO", "VALOR_OC"]]
         .style
-        .hide(axis="index")
         .format({ "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")})
         .set_properties(**{
             "background-color": "#FDEDEC",
@@ -995,7 +980,6 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         st.dataframe(
             tabela_total[["MES_NOME", "DESCRICAO", "VALOR_OC"]]
             .style
-            .hide(axis="index")
             .format({ "VALOR_OC": lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")})
             .set_properties(**{
                 "background-color": "#EAF6FB",
