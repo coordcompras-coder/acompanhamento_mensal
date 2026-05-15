@@ -37,11 +37,11 @@ O sistema possui autenticação de usuários com permissões por diretoria.
 ```python
 USUARIOS = {
     "admin": {"senha": "admin2026", "acesso": ["PR", "DG", "DE", "DC", "DO"]},
-    "pr": {"senha": "pr2026", "acesso": ["PR", "DG", "DE", "DC", "DO"]},
-    "dg": {"senha": "dg2026", "acesso": ["DG"]},
-    "dc": {"senha": "dc2026", "acesso": ["DC"]},
-    "de": {"senha": "de2026", "acesso": ["DE"]},
-    "do": {"senha": "do2026", "acesso": ["DO"]}
+    "pr": {"senha": "*", "acesso": ["PR", "DG", "DE", "DC", "DO"]},
+    "dg": {"senha": "*", "acesso": ["DG"]},
+    "dc": {"senha": "*", "acesso": ["DC"]},
+    "de": {"senha": "*", "acesso": ["DE"]},
+    "do": {"senha": "*", "acesso": ["DO"]}
 }
 ```
 
