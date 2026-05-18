@@ -592,7 +592,7 @@ with tabs[0]:
 
 
     # ================== BARRAS ==================
-    st.subheader("💰 Top 10 Classificações R$")
+    st.subheader("Top 10 Classificações")
 
     fig_bar = px.bar(
         df_top10,
