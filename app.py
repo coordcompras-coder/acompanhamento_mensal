@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import os
 import plotly.express as px
+import requests
+from io import BytesIO
 
 # ==============================================================================
 # CONFIGURAÇÃO DA PÁGINA (Deve ser o primeiro comando Streamlit)
@@ -384,12 +386,47 @@ if os.path.exists(logo_path):
 st.markdown('<h1 class="main-title">ACOMPANHAMENTO DE GASTOS PREVISTOS E NÃO PREVISTOS 2026</h1>', unsafe_allow_html=True)
 
 # ================== CARREGAR EXCEL ==================
-caminho_excel = "https://docs.google.com/spreadsheets/d/1seIaYVZ1D06jPZm9O7yzXbW8hi8tgV2OzBHguyNrfMY/export?format=xlsx"
+# caminho_excel = "https://docs.google.com/spreadsheets/d/1seIaYVZ1D06jPZm9O7yzXbW8hi8tgV2OzBHguyNrfMY/export?format=xlsx"
 
 
-df_previsto = pd.read_excel(caminho_excel, sheet_name="previsto")
-df_realizado = pd.read_excel(caminho_excel, sheet_name="realizado")
-df_orcamento = pd.read_excel(caminho_excel, sheet_name="orcamento")
+# df_previsto = pd.read_excel(caminho_excel, sheet_name="previsto")
+# df_realizado = pd.read_excel(caminho_excel, sheet_name="realizado")
+# df_orcamento = pd.read_excel(caminho_excel, sheet_name="orcamento")
+
+#OBS: EU VOU DEIXAR ESSE CÓDIGO COMENTADO POIS É O ORIGINAL. POREM VOU MUDAR PORQUE DEU UM PEQUENO PROBLEMA COM CACHÊ. SE FICAR IGUAL EU VOU VOLTAR PARA ESSE. HOJE É 19/05/2026 AS 08:53
+
+
+# ================== CARREGAR EXCEL ================== ADICIONEI OS 2 ULTIMOS IMPORTS LÁ EM CIMA POR ESSE TRECHO
+
+URL_EXCEL = "https://docs.google.com/spreadsheets/d/1seIaYVZ1D06jPZm9O7yzXbW8hi8tgV2OzBHguyNrfMY/export?format=xlsx"
+
+@st.cache_data(ttl=300)
+def carregar_dados():
+
+    response = requests.get(URL_EXCEL)
+
+    if response.status_code != 200:
+        st.error("Erro ao carregar a planilha.")
+        st.stop()
+
+    arquivo_excel = BytesIO(response.content)
+
+    df_previsto = pd.read_excel(arquivo_excel, sheet_name="previsto")
+
+    # precisa reposicionar o ponteiro
+    arquivo_excel.seek(0)
+    df_realizado = pd.read_excel(arquivo_excel, sheet_name="realizado")
+
+    arquivo_excel.seek(0)
+    df_orcamento = pd.read_excel(arquivo_excel, sheet_name="orcamento")
+
+    return df_previsto, df_realizado, df_orcamento
+
+df_previsto, df_realizado, df_orcamento = carregar_dados()
+
+
+#ESSE TRECHO ESTÁ EM TESTE PARA VER SE É MELHOR 19/05/2026
+
 
 # ================== PADRONIZAÇÃO ==================
 df_previsto.columns = df_previsto.columns.str.upper().str.strip()
