@@ -4,6 +4,7 @@ import os
 import plotly.express as px
 import requests
 from io import BytesIO
+from PIL import Image
 
 # ==============================================================================
 # CONFIGURAÇÃO DA PÁGINA (Deve ser o primeiro comando Streamlit)
@@ -11,7 +12,7 @@ from io import BytesIO
 st.set_page_config(
     page_title="Dashboard Corporativo de Gastos 2026",
     layout="wide",
-    page_icon="📊"
+    icone = Image.open("icon/chart.png")
 )
 
 # ==============================================================================
