@@ -12,7 +12,7 @@ from PIL import Image
 st.set_page_config(
     page_title="Dashboard Corporativo de Gastos 2026",
     layout="wide",
-    icone = Image.open("icon/chart.png")
+    page_icon="📊"
 )
 
 # ==============================================================================
