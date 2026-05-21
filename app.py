@@ -782,6 +782,7 @@ with tabs[0]:
         df_tipo,
         x="MES_NOME",
         y="VALOR_OC",
+        color="TIPO",
         markers=True,
         color_discrete_map={
             "AQUISICAO": "#031521",  # azul petróleo#0B3C5D
