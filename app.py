@@ -782,8 +782,11 @@ with tabs[0]:
         df_tipo,
         x="MES_NOME",
         y="VALOR_OC",
-        color="TIPO",
-        markers=True
+        markers=True,
+        color_discrete_map={
+            "AQUISICAO": "#031521",  # azul petróleo#0B3C5D
+            "SERVICO": "#1CACEF"     # azul bebê
+        }
     )
 
     fig.update_traces(line_shape="spline")
