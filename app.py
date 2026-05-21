@@ -734,7 +734,10 @@ with tabs[0]:
         y="VALOR_OC",
         color="PREVISTO",
         text="VALOR_OC",
-        color_discrete_sequence=px.colors.sequential.Blues_r
+        color_discrete_map={
+        "SIM": "#0F4A07",   # verde escuro
+        "NAO": "#C61313"    # vermelho
+    }
     )
 
     fig.update_traces(
@@ -765,6 +768,7 @@ with tabs[0]:
     st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("---")
+
 #AQUISIÇÃO vs SERVIÇO AO LONGO DO TEMPO
     st.subheader("AQUISIÇÃO vs SERVIÇO AO LONGO DO TEMPO")
     df_tipo = (
@@ -836,7 +840,16 @@ with tabs[0]:
         y=["VALOR_OC", "VALOR_NF"],
         barmode="group",
         text_auto=True,
-        color_discrete_sequence=px.colors.sequential.Blues_r
+        #color_discrete_sequence=px.colors.sequential.Blues_r
+    )
+
+    # CORES DAS BARRAS
+    fig.for_each_trace(
+        lambda t: t.update(
+            marker_color=
+            "#0B3C5D" if t.name == "VALOR_OC"
+            else "#1CACEF"
+        )
     )
 
     # TEXTO FORA DA BARRA
