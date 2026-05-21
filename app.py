@@ -1117,6 +1117,13 @@ for i, diretoria in enumerate(st.session_state.diretorias):
             y="VALOR_OC",
             color="PREVISTO",
             markers=True,
+             category_orders={
+                "MES_NOME": [
+                    "Jan", "Fev", "Mar", "Abr",
+                    "Mai", "Jun", "Jul", "Ago",
+                    "Set", "Out", "Nov", "Dez"
+                ]
+            },
             color_discrete_map={
                 "SIM": "#0F4A07",   # verde
                 "NAO": "#C61313"    # vermelho
