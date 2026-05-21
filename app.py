@@ -190,7 +190,7 @@ input[type="password"] {
    MÉTRICAS
 ========================================================= */
 [data-testid="stMetric"] {
-    background: #F8FAFC;
+    background: #E2E8F0;
     border: 1px solid #E2E8F0;
     border-radius: 12px;
     padding: 20px !important;
@@ -1123,7 +1123,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
                     "Mai", "Jun", "Jul", "Ago",
                     "Set", "Out", "Nov", "Dez"
                 ]
-            },
+            },                                                               
             color_discrete_map={
                 "SIM": "#0F4A07",   # verde
                 "NAO": "#C61313"    # vermelho
