@@ -801,7 +801,7 @@ with tabs[0]:
 
     fig.update_traces(
         texttemplate="R$ %{text:,.2f}",
-        textposition="outside",
+        textposition="inside", #outside
         textfont=dict(color=FONT_COLOR)
     )
 
