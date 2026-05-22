@@ -461,7 +461,6 @@ BABY_BLUE = "#1CACEF"
 FONT_COLOR = "#000000"
 
 # ================== ABAS ==================
-#diretorias = ["Dashboard", "PR", "DG", "DE", "DC", "DO"]
 abas = ["Visão Geral"] + st.session_state.diretorias
 tabs = st.tabs(abas)
 
@@ -469,16 +468,57 @@ tabs = st.tabs(abas)
 with tabs[0]:
     st.header("Dashboard Geral")
 
-    total = df_realizado["VALOR_OC"].sum()
+    # total = df_realizado["VALOR_OC"].sum()
 
-    servicos = df_realizado[df_realizado["TIPO"] == "SERVICO"]["VALOR_OC"].sum()
-    aquisicoes = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]["VALOR_OC"].sum()
+    # servicos = df_realizado[df_realizado["TIPO"] == "SERVICO"]["VALOR_OC"].sum()
+    # aquisicoes = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]["VALOR_OC"].sum()
 
-    col1, col2, col3 = st.columns(3)
+    # col1, col2, col3 = st.columns(3)
 
-    col1.metric("Total Geral", formatar_moeda(total))
-    col2.metric("Serviços", formatar_moeda(servicos))
-    col3.metric("Aquisições", formatar_moeda(aquisicoes))
+    # col1.metric("Total Geral", formatar_moeda(total))
+    # col2.metric("Serviços", formatar_moeda(servicos))
+    # col3.metric("Aquisições", formatar_moeda(aquisicoes))
+
+
+        # NF Serviços
+    nf_servicos = (
+        df_realizado[df_realizado["TIPO"] == "SERVICO"]["VALOR_NF"]
+        .sum()
+    )
+
+    # NF Aquisições
+    nf_aquisicoes = (
+        df_realizado[df_realizado["TIPO"] == "AQUISICAO"]["VALOR_NF"]
+        .sum()
+    )
+
+    # Quantidade de Ordens de Compra
+    qtd_oc = df_realizado["OC"].nunique()
+
+    # Quantidade de Fornecedores
+    qtd_fornecedores = df_realizado["FORNECEDOR"].nunique()
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric(
+        "NF Serviços",
+        formatar_moeda(nf_servicos)
+    )
+
+    col2.metric(
+        "NF Aquisições",
+        formatar_moeda(nf_aquisicoes)
+    )
+
+    col3.metric(
+        "Qtd. Ordens de Compra",
+        f"{qtd_oc:,}".replace(",", ".")
+    )
+
+    col4.metric(
+        "Qtd. Fornecedores",
+        f"{qtd_fornecedores:,}".replace(",", ".")
+    )
 
 
 
