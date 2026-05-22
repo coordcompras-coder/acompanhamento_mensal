@@ -649,6 +649,7 @@ with tabs[0]:
 
     fig_bar.update_layout(
         yaxis=dict(
+            autorange="reversed",
             separatethousands=True,
             tickfont=dict(color=FONT_COLOR),
             title_font=dict(color=FONT_COLOR)
@@ -700,6 +701,7 @@ with tabs[0]:
 
     fig.update_layout(
         yaxis=dict(
+            autorange="reversed",
             separatethousands=True,
             tickfont=dict(color=FONT_COLOR),
             title_font=dict(color=FONT_COLOR)
@@ -751,6 +753,7 @@ with tabs[0]:
 
     fig.update_layout(
         yaxis=dict(
+            autorange="reversed",
             separatethousands=True,
             tickfont=dict(color=FONT_COLOR),
             title_font=dict(color=FONT_COLOR)
