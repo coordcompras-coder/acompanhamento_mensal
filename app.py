@@ -492,11 +492,16 @@ with tabs[0]:
         .sum()
     )
 
+    # Base apenas de AQUISIÇÃO
+    df_aquisicao = df_realizado[
+        df_realizado["TIPO"] == "AQUISICAO"
+    ]
+
     # Quantidade de Ordens de Compra
-    qtd_oc = df_realizado["OC"].nunique()
+    qtd_oc = df_aquisicao["OC"].nunique()
 
     # Quantidade de Fornecedores
-    qtd_fornecedores = df_realizado["FORNECEDOR"].nunique()
+    qtd_fornecedores = df_aquisicao["FORNECEDOR"].nunique()
 
     col1, col2, col3, col4 = st.columns(4)
 
