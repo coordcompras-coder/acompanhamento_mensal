@@ -1147,11 +1147,12 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         # ================== KPIs ==================
         st.subheader("Indicadores")
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
 
         col1.metric("Orçamento Aquisição", formatar_moeda(orc_aquisicao))
         col2.metric("Realizado", formatar_moeda(realizado_total))
         col3.metric("Não Previsto", formatar_moeda(nao_previsto))
+        col4.metric("Qtd. Ordens de Compra", f"{qtd_oc:,}".replace(",", "."))
 
         st.markdown("---")
 
