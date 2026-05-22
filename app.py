@@ -1138,6 +1138,8 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         orc = df_orcamento[df_orcamento["DIRETORIA"] == diretoria]
 
         # ================== CÁLCULOS ==================
+        # Quantidade de OCs da diretoria
+        qtd_oc = real["OC"].dropna().nunique()
         orc_aquisicao = orc["ORCAMENTO_AQUISICAO"].sum()
 
         realizado_total = real["VALOR_OC"].sum()
