@@ -794,7 +794,7 @@ with tabs[0]:
         color="PREVISTO",
         text="VALOR_OC",
         color_discrete_map={
-        "SIM": "#0B3C5D",   # 
+        "SIM": "#62afe3",   # 
         "NAO": "#1090e6"    # 
     }
     )
