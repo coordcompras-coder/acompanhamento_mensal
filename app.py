@@ -721,6 +721,62 @@ with tabs[0]:
 
 
     st.markdown("---")
+
+
+    #TOP 10 FORNECEDORES
+        st.subheader("TOP 10 FORNECEDORES")
+        df_ger = (
+            df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
+            .groupby("FORNECEDOR")["VALOR_OC"]
+            .sum()
+            .reset_index()
+            .sort_values("VALOR_OC", ascending=False)
+            .head(10)
+        )
+
+        fig = px.bar(
+            df_ger,
+            x="VALOR_OC",
+            y="FORNECEDOR",
+            orientation="h",
+            text="VALOR_OC",
+            color_discrete_sequence=[BABY_BLUE]
+        )
+
+        fig.update_traces(
+            texttemplate="R$ %{text:,.2s}",
+            textposition="auto",
+            textfont=dict(color=FONT_COLOR)
+        )
+
+        fig.update_layout(
+            yaxis=dict(
+                separatethousands=True,
+                tickfont=dict(color=FONT_COLOR),
+                title_font=dict(color=FONT_COLOR)
+            ),
+            xaxis=dict(
+                tickprefix="R$ ",
+                tickformat=",.2s",
+                tickfont=dict(color=FONT_COLOR),
+                title_font=dict(color=FONT_COLOR)
+            ),
+            separators=",.",
+            plot_bgcolor=GRAPH_BG,
+            paper_bgcolor=GRAPH_BG,
+            font=dict(color=FONT_COLOR),
+            legend=dict(font=dict(color=FONT_COLOR))
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.markdown("---")
+
+
+
+
+
+
 #REALIZADO vs NÃO PREVISTO (impacto)
     st.subheader("REALIZADO vs NÃO PREVISTO (Aquisição)")
     df_prev = (
