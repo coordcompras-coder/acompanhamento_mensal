@@ -640,7 +640,7 @@ with tabs[0]:
 
 
     st.markdown("---")
-#DISTRIBUIÇÃO POR CLASSIFICAÇÃO pizza
+#DISTRIBUIÇÃO POR CLASSIFICAÇÃO
     st.subheader(" Distribuição por Classificação %")
     df_class = (
         df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
@@ -650,18 +650,18 @@ with tabs[0]:
         .sort_values("VALOR_OC", ascending=False)
     )
 
-    # Top 10 CLASSIFICACAO pizza
-    df_top10 = df_class.head(6)
+    # ================== PIZZA (TOP 6) ==================
+    df_pizza = df_class.head(6)
 
     fig = px.pie(
-        df_top10,
+        df_pizza,
         names="CLASSIFICACAO",
         values="VALOR_OC",
         hole=0.4,
         color_discrete_sequence=px.colors.sequential.Blues_r
     )
+
     fig.update_traces(
-        #textfont=dict(color=FONT_COLOR)
         textposition='inside',
         textinfo='percent',
         insidetextfont=dict(
@@ -669,23 +669,27 @@ with tabs[0]:
             size=14
         )
     )
+
     fig.update_layout(
         plot_bgcolor=GRAPH_BG,
         paper_bgcolor=GRAPH_BG,
         font=dict(color=FONT_COLOR),
         legend=dict(font=dict(color=FONT_COLOR))
     )
+
     st.plotly_chart(fig, use_container_width=True)
  
 
     st.markdown("---")
 
 
-    # ================== BARRAS ==================
+    # ================== BARRAS (TOP 10) ==================
     st.subheader("Top 10 Classificações")
 
+    df_bar = df_class.head(10)
+
     fig_bar = px.bar(
-        df_top10,
+        df_bar,
         x="VALOR_OC",
         y="CLASSIFICACAO",
         orientation="h",
@@ -702,7 +706,6 @@ with tabs[0]:
     fig_bar.update_layout(
         yaxis=dict(
             autorange="reversed",
-            separatethousands=True,
             tickfont=dict(color=FONT_COLOR),
             title_font=dict(color=FONT_COLOR)
         ),
@@ -712,15 +715,13 @@ with tabs[0]:
             tickfont=dict(color=FONT_COLOR),
             title_font=dict(color=FONT_COLOR)
         ),
-        separators=",.",
+        separators=".,",
         plot_bgcolor=GRAPH_BG,
         paper_bgcolor=GRAPH_BG,
-        font=dict(color=FONT_COLOR),
-        legend=dict(font=dict(color=FONT_COLOR))
+        font=dict(color=FONT_COLOR)
     )
 
     st.plotly_chart(fig_bar, use_container_width=True)
-
 
 
 
