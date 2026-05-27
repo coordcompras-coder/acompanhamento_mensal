@@ -1047,77 +1047,77 @@ with tabs[0]:
     st.caption("📌 Este relatório considera apenas dados de AQUISIÇÃO")
     st.markdown("---")
 
+  
     # ================== INSIGHTS MENSAIS ==================
-    # ================== INSIGHTS MENSAIS ==================
-st.subheader("Insights Mensais")
+    st.subheader("Insights Mensais")
 
-# Agrupa por mês
-df_mensal = (
-    df_realizado
-    .groupby(["MES_NUM", "MES_NOME"])["VALOR_OC"]
-    .sum()
-    .reset_index()
-    .sort_values("MES_NUM")
-)
-
-insights = []
-
-for _, row in df_mensal.iterrows():
-
-    mes = row["MES_NOME"]
-
-    # Filtra dados do mês
-    df_mes = df_realizado[df_realizado["MES_NOME"] == mes]
-
-    # Total gasto no mês
-    total_mes = df_mes["VALOR_OC"].sum()
-
-    # ==============================
-    # DIRETORIA QUE MAIS GASTOU
-    # ==============================
-    top_dir = (
-        df_mes.groupby("DIRETORIA")["VALOR_OC"]
+    # Agrupa por mês
+    df_mensal = (
+        df_realizado
+        .groupby(["MES_NUM", "MES_NOME"])["VALOR_OC"]
         .sum()
-        .sort_values(ascending=False)
+        .reset_index()
+        .sort_values("MES_NUM")
     )
 
-    diretoria_top = top_dir.index[0]
+    insights = []
 
-    # ==============================
-    # CLASSIFICAÇÃO QUE MAIS GASTOU
-    # ==============================
-    top_class = (
-        df_mes.groupby("CLASSIFICACAO")["VALOR_OC"]
-        .sum()
-        .sort_values(ascending=False)
+    for _, row in df_mensal.iterrows():
+
+        mes = row["MES_NOME"]
+
+        # Filtra dados do mês
+        df_mes = df_realizado[df_realizado["MES_NOME"] == mes]
+
+        # Total gasto no mês
+        total_mes = df_mes["VALOR_OC"].sum()
+
+        # ==============================
+        # DIRETORIA QUE MAIS GASTOU
+        # ==============================
+        top_dir = (
+            df_mes.groupby("DIRETORIA")["VALOR_OC"]
+            .sum()
+            .sort_values(ascending=False)
+        )
+
+        diretoria_top = top_dir.index[0]
+
+        # ==============================
+        # CLASSIFICAÇÃO QUE MAIS GASTOU
+        # ==============================
+        top_class = (
+            df_mes.groupby("CLASSIFICACAO")["VALOR_OC"]
+            .sum()
+            .sort_values(ascending=False)
+        )
+
+        class_top = top_class.index[0]
+
+        # ==============================
+        # LISTA FINAL
+        # ==============================
+        insights.append({
+            "MÊS": mes,
+            "DIRETORIA QUE MAIS GASTOU": diretoria_top,
+            "VALOR TOTAL GASTO": formatar_moeda(total_mes),
+            "CLASSIFICAÇÃO QUE MAIS GASTOU": class_top
+        })
+
+    # DataFrame final
+    df_insights = pd.DataFrame(insights)
+
+    # Exibição
+    st.dataframe(
+        df_insights.style
+        .set_properties(**{
+            "background-color": "#EAF6FB",
+            "color": "#1F2937",
+            "border-color": "#D6EAF2",
+            "text-align": "center"
+        }),
+        use_container_width=True
     )
-
-    class_top = top_class.index[0]
-
-    # ==============================
-    # LISTA FINAL
-    # ==============================
-    insights.append({
-        "MÊS": mes,
-        "DIRETORIA QUE MAIS GASTOU": diretoria_top,
-        "VALOR TOTAL GASTO": formatar_moeda(total_mes),
-        "CLASSIFICAÇÃO QUE MAIS GASTOU": class_top
-    })
-
-# DataFrame final
-df_insights = pd.DataFrame(insights)
-
-# Exibição
-st.dataframe(
-    df_insights.style
-    .set_properties(**{
-        "background-color": "#EAF6FB",
-        "color": "#1F2937",
-        "border-color": "#D6EAF2",
-        "text-align": "center"
-    }),
-    use_container_width=True
-)
 
 
 # ================== LOOP ==================
