@@ -1039,26 +1039,39 @@ with tabs[0]:
         saldo = row["SALDO_RESTANTE"]
         orcamento = row["ORCAMENTO_AQUISICAO"]
 
-        # passou do orçamento
+        estilos = [''] * len(row)
+
+        col_idx = row.index.get_loc("SALDO_RESTANTE")
+
+        # 🔴 passou orçamento
         if saldo < 0:
-            return [''] * 3 + [
-                'background-color: #FECACA; color: #991B1B; font-weight: bold'
-            ]
+            estilos[col_idx] = (
+                'background-color: #FECACA; '
+                'color: #991B1B; '
+                'font-weight: bold'
+            )
 
-        # próximo do limite (10%)
+        # 🟡 próximo do limite
         elif saldo <= (orcamento * 0.10):
-            return [''] * 3 + [
-                'background-color: #FEF3C7; color: #92400E; font-weight: bold'
-            ]
+            estilos[col_idx] = (
+                'background-color: #FEF3C7; '
+                'color: #92400E; '
+                'font-weight: bold'
+            )
 
-        # saudável
+        # 🟢 saudável
         else:
-            return [''] * 3 + [
-                'background-color: #DCFCE7; color: #166534; font-weight: bold'
-            ]
+            estilos[col_idx] = (
+                'background-color: #DCFCE7; '
+                'color: #166534; '
+                'font-weight: bold'
+            )
 
-    # ================== EXIBIÇÃO ==================
-    st.dataframe(
+        return estilos
+
+
+    # ================== STYLE DATAFRAME ==================
+    styled_df = (
         df_conf[[
             "DIRETORIA",
             "VALOR_OC",
@@ -1071,13 +1084,18 @@ with tabs[0]:
             "ORCAMENTO_AQUISICAO": "R$ {:,.2f}",
             "SALDO_RESTANTE": "R$ {:,.2f}"
         })
-        .apply(cor_saldo, axis=1)
         .set_properties(**{
             "background-color": "#EAF6FB",
             "color": "#062D3C",
             "border-color": "#D6EAF2",
             "text-align": "center"
-        }),
+        })
+        .apply(cor_saldo, axis=1)
+    )
+
+    # ================== EXIBIÇÃO ==================
+    st.dataframe(
+        styled_df,
         use_container_width=True
     )
 
