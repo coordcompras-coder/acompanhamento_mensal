@@ -1171,9 +1171,9 @@ for i, diretoria in enumerate(st.session_state.diretorias):
             text="Valor",
             color="Categoria",
             color_discrete_map={
-                "Orçamento": "#0F4A07",          # verde
-                "Realizado Previsto": "#063432", # azul 
-                "Não Previsto": "#A20D0D"       # vermelho
+                "Orçamento": "#5DADE2",          # Azul claro 
+                "Realizado Previsto": "#063432", # azul escuro
+                "Não Previsto": "#149c96"       # azul
             }
         )
 
