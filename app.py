@@ -661,7 +661,7 @@ with tabs[0]:
         color_discrete_sequence=px.colors.sequential.Blues_r
     )
     fig.update_traces(
-        textfont=dict(color=FONT_COLOR)
+        #textfont=dict(color=FONT_COLOR)
         textposition='inside',
         textinfo='percent',
         insidetextfont=dict(
