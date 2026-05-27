@@ -650,7 +650,7 @@ with tabs[0]:
         .sort_values("VALOR_OC", ascending=False)
     )
 
-    # Top 10 CLASSIFICACAO
+    # Top 10 CLASSIFICACAO pizza
     df_top10 = df_class.head(10)
 
     fig = px.pie(
@@ -662,6 +662,12 @@ with tabs[0]:
     )
     fig.update_traces(
         textfont=dict(color=FONT_COLOR)
+        textposition='inside',
+        textinfo='percent',
+        insidetextfont=dict(
+            color='white',
+            size=14
+        )
     )
     fig.update_layout(
         plot_bgcolor=GRAPH_BG,
