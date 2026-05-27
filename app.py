@@ -207,7 +207,7 @@ input[type="password"] {
 [data-testid="stMetricValue"] {
     color: #000000 !important;
     font-weight: 700 !important;
-    font-size: 20px !important;   /* VALOR PRINCIPAL */
+    font-size: 10px !important;   /* VALOR PRINCIPAL */
 }
 
 /* =========================================================
