@@ -1012,7 +1012,7 @@ with tabs[0]:
     st.plotly_chart(fig, use_container_width=True)
 
 #tabela de conferencia entre OC e NF
-# 📊 Conferência: Orçado vs Realizado por Diretoria
+    # ================== TABELA CONFERÊNCIA ==================
     st.subheader("Conferência: Orçado vs Realizado por Diretoria")
 
     df_conf = (
@@ -1028,25 +1028,56 @@ with tabs[0]:
         how="left"
     )
 
-    # Saldo restante (pode ser negativo)
-    df_conf["SALDO_RESTANTE"] = df_conf["ORCAMENTO_AQUISICAO"] - df_conf["VALOR_OC"]
+    # ================== SALDO ==================
+    df_conf["SALDO_RESTANTE"] = (
+        df_conf["ORCAMENTO_AQUISICAO"] - df_conf["VALOR_OC"]
+    )
 
-    # Estilo da tabela
+    # ================== FUNÇÃO DE COR ==================
+    def cor_saldo(row):
+
+        saldo = row["SALDO_RESTANTE"]
+        orcamento = row["ORCAMENTO_AQUISICAO"]
+
+        # passou do orçamento
+        if saldo < 0:
+            return [''] * 3 + [
+                'background-color: #FECACA; color: #991B1B; font-weight: bold'
+            ]
+
+        # próximo do limite (10%)
+        elif saldo <= (orcamento * 0.10):
+            return [''] * 3 + [
+                'background-color: #FEF3C7; color: #92400E; font-weight: bold'
+            ]
+
+        # saudável
+        else:
+            return [''] * 3 + [
+                'background-color: #DCFCE7; color: #166534; font-weight: bold'
+            ]
+
+    # ================== EXIBIÇÃO ==================
     st.dataframe(
-        df_conf[["DIRETORIA", "VALOR_OC", "ORCAMENTO_AQUISICAO", "SALDO_RESTANTE"]]
+        df_conf[[
+            "DIRETORIA",
+            "VALOR_OC",
+            "ORCAMENTO_AQUISICAO",
+            "SALDO_RESTANTE"
+        ]]
         .style
         .format({
             "VALOR_OC": "R$ {:,.2f}",
             "ORCAMENTO_AQUISICAO": "R$ {:,.2f}",
             "SALDO_RESTANTE": "R$ {:,.2f}"
         })
-    #.background_gradient(subset=["SALDO_RESTANTE"], cmap="Blues")
-    .set_properties(**{
-        "background-color": "#EAF6FB",  # azul clarinho
-        "color": "#062D3C",             # texto preto/cinza escuro
-        "border-color": "#D6EAF2",
-        "text-align": "center"
-    }),
+        .apply(cor_saldo, axis=1)
+        .set_properties(**{
+            "background-color": "#EAF6FB",
+            "color": "#062D3C",
+            "border-color": "#D6EAF2",
+            "text-align": "center"
+        }),
         use_container_width=True
     )
 
