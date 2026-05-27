@@ -651,7 +651,7 @@ with tabs[0]:
     )
 
     # Top 10 CLASSIFICACAO pizza
-    df_top10 = df_class.head(10)
+    df_top10 = df_class.head(8)
 
     fig = px.pie(
         df_top10,
