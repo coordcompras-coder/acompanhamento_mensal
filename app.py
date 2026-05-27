@@ -1011,7 +1011,7 @@ with tabs[0]:
 
     st.plotly_chart(fig, use_container_width=True)
 
-#tabela de conferencia entre OC e NF
+    #tabela de conferencia entre OC e NF
     # ================== TABELA CONFERÊNCIA ==================
     st.subheader("Conferência: Orçado vs Realizado por Diretoria")
 
@@ -1052,7 +1052,7 @@ with tabs[0]:
             )
 
         # 🟡 próximo do limite
-        elif saldo <= (orcamento * 0.10):
+        elif saldo <= (orcamento * 0.30):
             estilos[col_idx] = (
                 'background-color: #FEF3C7; '
                 'color: #92400E; '
