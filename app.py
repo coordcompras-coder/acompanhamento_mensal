@@ -884,7 +884,7 @@ with tabs[0]:
 #AQUISIÇÃO vs SERVIÇO AO LONGO DO TEMPO
     st.subheader("AQUISIÇÃO vs SERVIÇO AO LONGO DO TEMPO")
     df_tipo = (
-    df_realizado.groupby(["MES_NUM", "MES_NOME", "TIPO"])["VALOR_OC"]
+    df_realizado.groupby(["MES_NUM", "MES_NOME", "TIPO"])["VALOR_NF"]
     .sum()
     .reset_index()
     .sort_values("MES_NUM")
@@ -893,7 +893,7 @@ with tabs[0]:
     fig = px.line(
         df_tipo,
         x="MES_NOME",
-        y="VALOR_OC",
+        y="VALOR_NF",
         color="TIPO",
         markers=True,
         color_discrete_map={
