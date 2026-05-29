@@ -586,7 +586,7 @@ with tabs[0]:
 
     st.markdown("---")
 #SERVIÇOS LINHA POR DIRETORIA
-    st.subheader("Evolução Mensal - Serviços por Diretoria")
+    st.subheader("Evolução Mensal - Serviços Pagos por Diretoria")
 
     df_sv = df_realizado[df_realizado["TIPO"] == "SERVICO"]
 
