@@ -591,7 +591,7 @@ with tabs[0]:
     df_sv = df_realizado[df_realizado["TIPO"] == "SERVICO"]
 
     df_sv_mensal = (
-        df_sv.groupby(["MES_NUM", "MES_NOME", "DIRETORIA"])["VALOR_OC"]
+        df_sv.groupby(["MES_NUM", "MES_NOME", "DIRETORIA"])["VALOR_NF"]
         .sum()
         .reset_index()
         .sort_values("MES_NUM")
@@ -600,7 +600,7 @@ with tabs[0]:
     fig_sv = px.line(
         df_sv_mensal,
         x="MES_NOME",
-        y="VALOR_OC",
+        y="VALOR_NF",
         color="DIRETORIA",
         markers=True,
         color_discrete_map={
