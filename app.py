@@ -834,7 +834,7 @@ with tabs[0]:
 
 
 #REALIZADO vs NÃO PREVISTO (impacto)
-    st.subheader("REALIZADO vs NÃO PREVISTO (Aquisição)")
+    st.subheader("PREVISTO vs NÃO PREVISTO (Aquisição)")
     df_prev = (
     df_realizado.groupby("PREVISTO")["VALOR_OC"]
     .sum()
