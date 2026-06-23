@@ -554,6 +554,9 @@ with tabs[0]:
         y="VALOR_OC",
         color="DIRETORIA",
         markers=True,
+        category_orders={
+            "MES_NOME": ordem_meses
+        },
         color_discrete_map={
             "PR": "#103749",
             "DG": "#15DDDA",
