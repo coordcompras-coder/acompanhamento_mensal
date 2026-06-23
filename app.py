@@ -557,9 +557,9 @@ with tabs[0]:
         }
     )
         #adicinei esse trecho 23/06
-        st.write(
-            df_aq_mensal[
-                ["MES_NUM", "MES_NOME"]
+    st.write(
+        df_aq_mensal[
+            ["MES_NUM", "MES_NOME"]
             ]
             .drop_duplicates()
             .sort_values("MES_NUM")
