@@ -556,9 +556,17 @@ with tabs[0]:
             "DO": "#0D562E"
         }
     )
+    #adicinei esse trecho 23/06
+        st.write(
+        df_aq_mensal[
+            ["MES_NUM", "MES_NOME"]
+        ]
+        .drop_duplicates()
+        .sort_values("MES_NUM")
+    )
 
     fig_aq.update_traces(
-        line_shape="spline", # suaviza as linhas,  line=dict(width=4) deixa as linhas mais grossas, dash="dash" deixa tracejada, 
+        line_shape="linear", # spline suaviza as linhas,  line=dict(width=4) deixa as linhas mais grossas, dash="dash" deixa tracejada, 
         hovertemplate="R$ %{y:,.2s}"
     )
 
