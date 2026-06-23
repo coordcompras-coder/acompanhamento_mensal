@@ -533,6 +533,12 @@ with tabs[0]:
 #AQUISIÇÃO LINHA POR DIRETORIA
     st.subheader("Evolução Mensal - Aquisições por Diretoria")
 
+    ordem_meses = [
+        "Jan", "Fev", "Mar", "Abr",
+        "Mai", "Jun", "Jul", "Ago",
+        "Set", "Out", "Nov", "Dez"
+    ]
+
     df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
 
     df_aq_mensal = (
@@ -556,17 +562,10 @@ with tabs[0]:
             "DO": "#0D562E"
         }
     )
-        #adicinei esse trecho 23/06
-    st.write(
-        df_aq_mensal[
-            ["MES_NUM", "MES_NOME"]
-            ]
-            .drop_duplicates()
-            .sort_values("MES_NUM")
-        )
+
 
     fig_aq.update_traces(
-        line_shape="linear", # spline suaviza as linhas,  line=dict(width=4) deixa as linhas mais grossas, dash="dash" deixa tracejada, 
+        line_shape="spline", # spline suaviza as linhas,  line=dict(width=4) deixa as linhas mais grossas, dash="dash" deixa tracejada, 
         hovertemplate="R$ %{y:,.2s}"
     )
 
