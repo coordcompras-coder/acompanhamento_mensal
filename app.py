@@ -1347,7 +1347,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         )
         
         
-        st.dataframe(
+        st.table(
             tabela_mensal[["MES_NOME", "VALOR_OC"]]
             .style
             .format({
