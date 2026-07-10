@@ -539,7 +539,7 @@ with tabs[0]:
     #     "Set", "Out", "Nov", "Dez"
     # ]
 
-    # df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
+    df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
 
     # df_aq_mensal = (
     #     df_aq.groupby(["MES_NUM", "MES_NOME", "DIRETORIA"])["VALOR_OC"]
