@@ -530,27 +530,53 @@ with tabs[0]:
 
 #========graficos de linha por diretoria========
     st.markdown("---")
-#AQUISIÇÃO LINHA POR DIRETORIA
+# ================== GRÁFICO LINHA - AQUISIÇÕES POR DIRETORIA ==================
+
     st.subheader("Evolução Mensal - Aquisições por Diretoria")
 
+    # Ordem dos meses
     ordem_meses = [
         "Jan", "Fev", "Mar", "Abr",
         "Mai", "Jun", "Jul", "Ago",
         "Set", "Out", "Nov", "Dez"
     ]
 
-    df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
+    # Filtra apenas aquisições
+    df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"].copy()
 
+    # Agrupa os valores
     df_aq_mensal = (
-        df_aq.groupby(["MES_NUM", "MES_NOME", "DIRETORIA"])["VALOR_OC"]
+        df_aq.groupby(["MES_NUM", "MES_NOME", "DIRETORIA"], as_index=False)["VALOR_OC"]
         .sum()
-        .reset_index()
-        .sort_values("MES_NUM")
     )
 
+    # Todas as combinações de meses e diretorias
+    indice = pd.MultiIndex.from_product(
+        [
+            range(1, 13),
+            ["PR", "DG", "DE", "DC", "DO"]
+        ],
+        names=["MES_NUM", "DIRETORIA"]
+    )
 
+    # Reindexa preenchendo os meses sem movimentação com zero
+    df_aq_mensal = (
+        df_aq_mensal
+        .set_index(["MES_NUM", "DIRETORIA"])
+        .reindex(indice, fill_value=0)
+        .reset_index()
+    )
 
+    # Cria novamente o nome do mês
+    mapa_num_mes = {
+        1:"Jan", 2:"Fev", 3:"Mar", 4:"Abr",
+        5:"Mai", 6:"Jun", 7:"Jul", 8:"Ago",
+        9:"Set", 10:"Out", 11:"Nov", 12:"Dez"
+    }
 
+    df_aq_mensal["MES_NOME"] = df_aq_mensal["MES_NUM"].map(mapa_num_mes)
+
+    # Gráfico
     fig_aq = px.line(
         df_aq_mensal,
         x="MES_NOME",
@@ -569,32 +595,23 @@ with tabs[0]:
         }
     )
 
-
     fig_aq.update_traces(
-        line_shape="spline", # spline suaviza as linhas,  line=dict(width=4) deixa as linhas mais grossas, dash="dash" deixa tracejada, 
-        hovertemplate="R$ %{y:,.2s}"
+        line_shape="linear",
+        hovertemplate="R$ %{y:,.2f}<extra></extra>"
     )
 
     fig_aq.update_layout(
         yaxis=dict(
             tickprefix="R$ ",
-            tickformat=",.2s", # .2f  mostra valores completos com 2 casas decimais, || .0f mostra valores arredondados sem casas decimais  || ",.2s"    # reduzido (k, M, B) || ",.2%"    # porcentagem || ",.2e"    # notação científica  
-            separatethousands=True,
-            tickfont=dict(color=FONT_COLOR),
-            title_font=dict(color=FONT_COLOR)
+            tickformat=",.2s",
+            separatethousands=True
         ),
-        xaxis=dict(
-            tickfont=dict(color=FONT_COLOR),
-            title_font=dict(color=FONT_COLOR)
-        ),
-        separators=",.",
         plot_bgcolor=GRAPH_BG,
         paper_bgcolor=GRAPH_BG,
-        font=dict(color=FONT_COLOR),
-        legend=dict(font=dict(color=FONT_COLOR))
+        font=dict(color=FONT_COLOR)
     )
 
-    st.plotly_chart(fig_aq, use_container_width=True, key="linha_aquisicao_dir")
+    st.plotly_chart(fig_aq, use_container_width=True)
 
 
     st.markdown("---")
