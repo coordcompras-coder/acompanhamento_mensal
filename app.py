@@ -534,19 +534,19 @@ with tabs[0]:
     st.subheader("Evolução Mensal - Aquisições por Diretoria")
 
     ordem_meses = [
-         "Jan", "Fev", "Mar", "Abr",
-         "Mai", "Jun", "Jul", "Ago",
-         "Set", "Out", "Nov", "Dez"
+        "Jan", "Fev", "Mar", "Abr",
+        "Mai", "Jun", "Jul", "Ago",
+        "Set", "Out", "Nov", "Dez"
     ]
 
     df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
 
-     df_aq_mensal = (
+    df_aq_mensal = (
         df_aq.groupby(["MES_NUM", "MES_NOME", "DIRETORIA"])["VALOR_OC"]
         .sum()
         .reset_index()
         .sort_values("MES_NUM")
-     )
+    )
 
 
 
