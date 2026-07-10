@@ -533,20 +533,55 @@ with tabs[0]:
 #AQUISIÇÃO LINHA POR DIRETORIA
     st.subheader("Evolução Mensal - Aquisições por Diretoria")
 
-    ordem_meses = [
-        "Jan", "Fev", "Mar", "Abr",
-        "Mai", "Jun", "Jul", "Ago",
-        "Set", "Out", "Nov", "Dez"
-    ]
+    # ordem_meses = [
+    #     "Jan", "Fev", "Mar", "Abr",
+    #     "Mai", "Jun", "Jul", "Ago",
+    #     "Set", "Out", "Nov", "Dez"
+    # ]
 
-    df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
+    # df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
 
+    # df_aq_mensal = (
+    #     df_aq.groupby(["MES_NUM", "MES_NOME", "DIRETORIA"])["VALOR_OC"]
+    #     .sum()
+    #     .reset_index()
+    #     .sort_values("MES_NUM")
+    # )
+
+    # Agrupamento
     df_aq_mensal = (
         df_aq.groupby(["MES_NUM", "MES_NOME", "DIRETORIA"])["VALOR_OC"]
         .sum()
         .reset_index()
-        .sort_values("MES_NUM")
     )
+
+    # Todos os meses
+    meses = pd.DataFrame({
+        "MES_NUM": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "MES_NOME": ["Jan","Fev","Mar","Abr","Mai","Jun",
+                    "Jul","Ago","Set","Out","Nov","Dez"]
+    })
+
+    # Todas as diretorias
+    diretorias = ["PR", "DG", "DE", "DC", "DO"]
+
+    # Produto cartesiano (todas as combinações)
+    base = meses.merge(
+        pd.DataFrame({"DIRETORIA": diretorias}),
+        how="cross"
+    )
+
+    # Junta com os valores existentes
+    df_aq_mensal = (
+        base.merge(
+            df_aq_mensal,
+            on=["MES_NUM", "MES_NOME", "DIRETORIA"],
+            how="left"
+        )
+        .fillna({"VALOR_OC": 0})
+    )
+
+
 
     fig_aq = px.line(
         df_aq_mensal,
