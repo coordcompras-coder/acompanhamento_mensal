@@ -1278,8 +1278,9 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         # ================== GRÁFICO LINHA ==================
         st.subheader("Evolução Mensal")
 
+        st.write(real.groupby("MES_NOME")["VALOR_OC"].sum()), #adicionei a linha 1282
+        
         df_linha = (
-            st.write(real.groupby("MES_NOME")["VALOR_OC"].sum()), #adicionei a linha 1282
             real.groupby(["MES_NUM", "MES_NOME", "PREVISTO"])["VALOR_OC"]
             .sum()
             .reset_index()
