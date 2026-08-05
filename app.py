@@ -1278,8 +1278,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         # ================== GRÁFICO LINHA ==================
         st.subheader("Evolução Mensal")
 
-        #st.write(real.groupby("MES_NOME")["VALOR_OC"].sum()), #adicionei a linha 1282
-        
+
         df_linha = (
             real.groupby(["MES_NUM", "MES_NOME", "PREVISTO"])["VALOR_OC"]
             .sum()
@@ -1307,7 +1306,8 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         )
 
         fig_linha.update_traces(
-            line_shape="linear",  #spline
+
+            line_shape="linear", #spline
             mode="lines+markers",  #adicionei para testar o compormento
             texttemplate="R$ %{y:,.0f}",
             hovertemplate="R$ %{y:,.2f}"
