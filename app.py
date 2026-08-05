@@ -1418,7 +1418,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
 st.markdown("---")
 st.markdown(
     "<div style='text-align: center; color: #000000;'>"
-    "Sistema conectado ao Excel | Atualização automática de dados"
+    "Sistema conectado ao Excel | Atualização automática de dados | COORD COMPRAS"
     "</div>",
     unsafe_allow_html=True
 )
