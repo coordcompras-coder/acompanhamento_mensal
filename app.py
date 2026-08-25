@@ -6,18 +6,13 @@ import requests
 from io import BytesIO
 from PIL import Image
 
-# ==============================================================================
-# CONFIGURAÇÃO DA PÁGINA (Deve ser o primeiro comando Streamlit)
-# ==============================================================================
+
 st.set_page_config(
     page_title="Dashboard Corporativo de Gastos 2026",
     layout="wide",
     page_icon="📊"
 )
 
-# ==============================================================================
-# DADOS DE USUÁRIOS E SEGURANÇA
-# ==============================================================================
 USUARIOS = {
     "admin": {"senha": "admin2026", "acesso": ["PR", "DG", "DE", "DC", "DO"]},
     "pr": {"senha": "pr2026", "acesso": ["PR", "DG", "DE", "DC", "DO"]},
@@ -27,7 +22,6 @@ USUARIOS = {
     "do": {"senha": "do2026#", "acesso": ["DO"]}
 }
 
-# Inicialização do estado da sessão
 if 'autenticado' not in st.session_state:
     st.session_state.autenticado = False
 if 'usuario' not in st.session_state:
@@ -35,9 +29,7 @@ if 'usuario' not in st.session_state:
 if 'diretorias' not in st.session_state:
     st.session_state.diretorias = []
 
-# ==============================================================================
-# ESTILIZAÇÃO PROFISSIONAL (CSS)
-# ==============================================================================
+#css
 st.markdown("""
 <style>
 
@@ -330,20 +322,17 @@ div[data-testid="stDataFrame"] div[role="grid"] div[role="gridcell"] {
 </style>
 """, unsafe_allow_html=True)
 
-# ==============================================================================
-# FUNÇÕES UTILITÁRIAS
-# ==============================================================================
+# fim css
+
 def formatar_moeda(valor):
     return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
-# ==============================================================================
-# TELA DE LOGIN
-# ==============================================================================
+# login
 if not st.session_state.autenticado:
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown("<br><br>", unsafe_allow_html=True)
-        # Tentar carregar logo
+        
         current_dir = os.path.dirname(os.path.abspath(__file__))
         logo_path = os.path.join(current_dir, "icon", "imagem_caema.png")
         if os.path.exists(logo_path):
@@ -365,9 +354,7 @@ if not st.session_state.autenticado:
                     st.error("Credenciais inválidas. Por favor, tente novamente.")
     st.stop()
 
-# ==============================================================================
-# DASHBOARD PRINCIPAL (Só acessível após login)
-# ==============================================================================
+# dash
 
 # Barra lateral com informações do usuário e Logout
 with st.sidebar:
@@ -378,8 +365,7 @@ with st.sidebar:
         st.session_state.usuario = None
         st.rerun()
 
-# Cabeçalho do Dashboard
-# Logo acima do cabeçalho
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 logo_path = os.path.join(current_dir, "icon", "imagem_caema.png")
 if os.path.exists(logo_path):
@@ -430,21 +416,21 @@ df_previsto, df_realizado, df_orcamento = carregar_dados()
 #ESSE TRECHO ESTÁ EM TESTE PARA VER SE É MELHOR 19/05/2026
 
 
-# ================== PADRONIZAÇÃO ==================
+
 df_previsto.columns = df_previsto.columns.str.upper().str.strip()
 df_realizado.columns = df_realizado.columns.str.upper().str.strip()
 df_orcamento.columns = df_orcamento.columns.str.upper().str.strip()
 
-# ================== TRATAMENTO DE DATA ==================
+
 df_realizado["DATA"] = pd.to_datetime(df_realizado["DATA"], errors="coerce")
 
-# Número do mês (ordem)
+
 df_realizado["MES_NUM"] = df_realizado["DATA"].dt.month
 
-# Nome do mês
+
 df_realizado["MES_NOME"] = df_realizado["DATA"].dt.strftime("%b")
 
-# Traduzir para PT-BR
+
 mapa_meses = {
     "Jan": "Jan", "Feb": "Fev", "Mar": "Mar", "Apr": "Abr",
     "May": "Mai", "Jun": "Jun", "Jul": "Jul", "Aug": "Ago",
@@ -453,19 +439,18 @@ mapa_meses = {
 
 df_realizado["MES_NOME"] = df_realizado["MES_NOME"].map(mapa_meses)
 
-# ================== PALETA AZUL BEBÊ ==================
-# Cor de fundo dos gráficos: azul bebê suave
+
 GRAPH_BG = "rgba(209,223,230,0.30)"
-# Cor das barras/linhas padrão: azul bebê médio
+
 BABY_BLUE = "#1CACEF"
-# Cor do texto dos gráficos: preto
+
 FONT_COLOR = "#000000"
 
-# ================== ABAS ==================
+
 abas = ["Visão Geral"] + st.session_state.diretorias
 tabs = st.tabs(abas)
 
-# ================== DASHBOARD ==================
+
 with tabs[0]:
     st.header("Dashboard Geral")
 
@@ -481,27 +466,25 @@ with tabs[0]:
     # col3.metric("Aquisições", formatar_moeda(aquisicoes))
 
 
-        # NF Serviços
+        
     nf_servicos = (
         df_realizado[df_realizado["TIPO"] == "SERVICO"]["VALOR_NF"]
         .sum()
     )
 
-    # NF Aquisições
+    
     nf_aquisicoes = (
         df_realizado[df_realizado["TIPO"] == "AQUISICAO"]["VALOR_NF"]
         .sum()
     )
 
-    # Base apenas de AQUISIÇÃO
+    
     df_aquisicao = df_realizado[
         df_realizado["TIPO"] == "AQUISICAO"
     ]
-
-    # Quantidade de Ordens de Compra
+    
     qtd_oc = df_aquisicao["OC"].nunique()
 
-    # Quantidade de Fornecedores
     qtd_fornecedores = df_aquisicao["FORNECEDOR"].nunique()
 
     col1, col2, col3, col4 = st.columns(4)
@@ -528,9 +511,9 @@ with tabs[0]:
 
 
 
-#========graficos de linha por diretoria========
+
     st.markdown("---")
-#AQUISIÇÃO LINHA POR DIRETORIA
+
     st.subheader("Evolução Mensal - Aquisições por Diretoria")
 
     ordem_meses = [
@@ -598,7 +581,7 @@ with tabs[0]:
 
 
     st.markdown("---")
-#SERVIÇOS LINHA POR DIRETORIA
+
     st.subheader("Evolução Mensal - Serviços Pagos por Diretoria")
 
     df_sv = df_realizado[df_realizado["TIPO"] == "SERVICO"]
@@ -653,7 +636,7 @@ with tabs[0]:
 
 
     st.markdown("---")
-#DISTRIBUIÇÃO POR CLASSIFICAÇÃO
+
     st.subheader(" Distribuição por Classificação %")
     df_class = (
         df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
@@ -663,7 +646,7 @@ with tabs[0]:
         .sort_values("VALOR_OC", ascending=False)
     )
 
-    # ================== PIZZA (TOP 6) ==================
+    
     df_pizza = df_class.head(6)
 
     fig = px.pie(
@@ -696,7 +679,7 @@ with tabs[0]:
     st.markdown("---")
 
 
-    # ================== BARRAS (TOP 10) ==================
+   
     st.subheader("Top 10 Classificações")
 
     df_bar = df_class.head(10)
@@ -739,7 +722,7 @@ with tabs[0]:
 
 
 
-#TOP GERÊNCIAS QUE MAIS GASTAM
+
     st.subheader("TOP 10 GERÊNCIAS QUE MAIS GASTAM")
     df_ger = (
         df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
@@ -791,7 +774,7 @@ with tabs[0]:
     st.markdown("---")
 
 
-    #TOP 10 FORNECEDORES
+    
     st.subheader("TOP 10 FORNECEDORES")
     df_ger = (
         df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
@@ -846,7 +829,7 @@ with tabs[0]:
 
 
 
-#REALIZADO vs NÃO PREVISTO (impacto)
+
     st.subheader("PREVISTO vs NÃO PREVISTO (Aquisição)")
     df_prev = (
     df_realizado.groupby("PREVISTO")["VALOR_OC"]
@@ -894,7 +877,7 @@ with tabs[0]:
 
     st.markdown("---")
 
-#AQUISIÇÃO vs SERVIÇO AO LONGO DO TEMPO
+
     st.subheader("AQUISIÇÃO vs SERVIÇO AO LONGO DO TEMPO")
     df_tipo = (
     df_realizado.groupby(["MES_NUM", "MES_NOME", "TIPO"])["VALOR_NF"]
@@ -938,31 +921,31 @@ with tabs[0]:
 
     st.markdown("---")
 
-#OC vs NF (controle financeiro)
+
 
     st.subheader("OC vs NF (Aquisição) por Diretoria vs Orçamento")
 
-    # FILTRAR APENAS AQUISIÇÃO
+    
     df_aq = df_realizado[df_realizado["TIPO"] == "AQUISICAO"]
 
-    # AGRUPAR OC e NF
+    
     df_oc_nf = (
         df_aq.groupby("DIRETORIA")[["VALOR_OC", "VALOR_NF"]]
         .sum()
         .reset_index()
     )
 
-    # ORÇAMENTO (já é aquisição)
+    
     df_orc = (
         df_orcamento.groupby("DIRETORIA")["ORCAMENTO_AQUISICAO"]
         .sum()
         .reset_index()
     )
 
-    # MERGE
+    
     df_final = df_oc_nf.merge(df_orc, on="DIRETORIA", how="left")
 
-    # GRÁFICO DE BARRAS
+    
     fig = px.bar(
         df_final,
         x="DIRETORIA",
@@ -972,7 +955,7 @@ with tabs[0]:
         #color_discrete_sequence=px.colors.sequential.Blues_r
     )
 
-    # CORES DAS BARRAS
+    
     fig.for_each_trace(
         lambda t: t.update(
             marker_color=
@@ -981,14 +964,14 @@ with tabs[0]:
         )
     )
 
-    # TEXTO FORA DA BARRA
+    
     fig.update_traces(
         texttemplate="R$ %{y:,.2s}",
         textposition="outside",
         textfont=dict(color=FONT_COLOR)
     )
 
-    # LINHA DE ORÇAMENTO (SUAVE)
+    
     fig.add_scatter(
         x=df_final["DIRETORIA"],
         y=df_final["ORCAMENTO_AQUISICAO"],
@@ -1002,7 +985,7 @@ with tabs[0]:
         )
     )
 
-    # FORMATAÇÃO
+    
     fig.update_layout(
         yaxis=dict(
             tickprefix="R$ ",
@@ -1024,8 +1007,8 @@ with tabs[0]:
 
     st.plotly_chart(fig, use_container_width=True)
 
-    #tabela de conferencia entre OC e NF
-    # ================== TABELA CONFERÊNCIA ==================
+    
+    
     st.subheader("Conferência: Orçado vs Realizado por Diretoria")
 
     df_conf = (
@@ -1041,12 +1024,12 @@ with tabs[0]:
         how="left"
     )
 
-    # ================== SALDO ==================
+     
     df_conf["SALDO_RESTANTE"] = (
         df_conf["ORCAMENTO_AQUISICAO"] - df_conf["VALOR_OC"]
     )
 
-    # ================== FUNÇÃO DE COR ==================
+     
     def cor_saldo(row):
 
         saldo = row["SALDO_RESTANTE"]
@@ -1056,7 +1039,7 @@ with tabs[0]:
 
         col_idx = row.index.get_loc("SALDO_RESTANTE")
 
-        # 🔴 passou orçamento
+        
         if saldo < 0:
             estilos[col_idx] = (
                 'background-color: #FECACA; '
@@ -1064,7 +1047,7 @@ with tabs[0]:
                 'font-weight: bold'
             )
 
-        # 🟡 próximo do limite
+        
         elif saldo <= (orcamento * 0.30):
             estilos[col_idx] = (
                 'background-color: #FEF3C7; '
@@ -1072,7 +1055,7 @@ with tabs[0]:
                 'font-weight: bold'
             )
 
-        # 🟢 saudável
+        
         else:
             estilos[col_idx] = (
                 'background-color: #DCFCE7; '
@@ -1083,7 +1066,7 @@ with tabs[0]:
         return estilos
 
 
-    # ================== STYLE DATAFRAME ==================
+     
     styled_df = (
         df_conf[[
             "DIRETORIA",
@@ -1106,7 +1089,7 @@ with tabs[0]:
         .apply(cor_saldo, axis=1)
     )
 
-    # ================== EXIBIÇÃO ==================
+    
     st.dataframe(
         styled_df,
         use_container_width=True
@@ -1117,10 +1100,10 @@ with tabs[0]:
     st.markdown("---")
 
   
-    # ================== INSIGHTS MENSAIS ==================
+    
     st.subheader("Insights Mensais")
 
-    # Agrupa por mês
+    
     df_mensal = (
         df_realizado
         .groupby(["MES_NUM", "MES_NOME"])["VALOR_OC"]
@@ -1135,15 +1118,15 @@ with tabs[0]:
 
         mes = row["MES_NOME"]
 
-        # Filtra dados do mês
+        
         df_mes = df_realizado[df_realizado["MES_NOME"] == mes]
 
-        # Total gasto no mês
+        
         total_mes = df_mes["VALOR_OC"].sum()
 
-        # ==============================
-        # DIRETORIA QUE MAIS GASTOU
-        # ==============================
+        
+        
+        
         top_dir = (
             df_mes.groupby("DIRETORIA")["VALOR_OC"]
             .sum()
@@ -1152,9 +1135,9 @@ with tabs[0]:
 
         diretoria_top = top_dir.index[0]
 
-        # ==============================
-        # CLASSIFICAÇÃO QUE MAIS GASTOU
-        # ==============================
+        
+          
+        
         top_class = (
             df_mes.groupby("CLASSIFICACAO")["VALOR_OC"]
             .sum()
@@ -1163,9 +1146,9 @@ with tabs[0]:
 
         class_top = top_class.index[0]
 
-        # ==============================
-        # LISTA FINAL
-        # ==============================
+        
+         
+        
         insights.append({
             "MÊS": mes,
             "DIRETORIA QUE MAIS GASTOU": diretoria_top,
@@ -1173,10 +1156,10 @@ with tabs[0]:
             "CLASSIFICAÇÃO QUE MAIS GASTOU": class_top
         })
 
-    # DataFrame final
+    
     df_insights = pd.DataFrame(insights)
 
-    # Exibição
+    
     st.dataframe(
         df_insights.style
         .set_properties(**{
@@ -1189,14 +1172,14 @@ with tabs[0]:
     )
 
 
-# ================== LOOP ==================
+
 for i, diretoria in enumerate(st.session_state.diretorias):
 
 
     with tabs[i + 1]:  # +1 porque a primeira aba é o dashboard geral
         st.header(f" Diretoria {diretoria}")
 
-        # FILTROS
+        
         prev = df_previsto[df_previsto["DIRETORIA"] == diretoria]
         real = df_realizado[
             (df_realizado["DIRETORIA"] == diretoria) &
@@ -1204,8 +1187,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         ]
         orc = df_orcamento[df_orcamento["DIRETORIA"] == diretoria]
 
-        # ================== CÁLCULOS ==================
-        # Quantidade de OCs da diretoria
+        
         qtd_oc = real["OC"].dropna().nunique()
         orc_aquisicao = orc["ORCAMENTO_AQUISICAO"].sum()
 
@@ -1213,7 +1195,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         realizado_previsto = real[real["PREVISTO"] == "SIM"]["VALOR_OC"].sum()
         nao_previsto = real[real["PREVISTO"] == "NAO"]["VALOR_OC"].sum()
 
-        # ================== KPIs ==================
+        #KPIs 
         st.subheader("Indicadores")
 
         col1, col2, col3, col4 = st.columns(4)
@@ -1225,7 +1207,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
 
         st.markdown("---")
 
-        # ================== GRÁFICO BARRAS ==================
+        
         st.subheader("Comparativo")
 
         df_grafico = pd.DataFrame({
@@ -1275,7 +1257,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
 
         st.markdown("---")
 
-        # ================== GRÁFICO LINHA ==================
+        
         st.subheader("Evolução Mensal")
 
 
@@ -1341,7 +1323,7 @@ for i, diretoria in enumerate(st.session_state.diretorias):
 
         st.markdown("---")
 
-        # ================== TABELA MENSAL ==================
+         
         st.subheader("Realizado por Mês")
 
         tabela_mensal = (
@@ -1371,7 +1353,6 @@ for i, diretoria in enumerate(st.session_state.diretorias):
 
         st.markdown("---")
 
-        # ================== TABELA NÃO PREVISTO ==================
         st.subheader("Não Previsto")
 
         tabela_nao_previsto = real[real["PREVISTO"] == "NAO"]
@@ -1389,8 +1370,6 @@ for i, diretoria in enumerate(st.session_state.diretorias):
         use_container_width=True
     )
         
-
-        # ================== TABELA DETALHAMENTO POR MÊS ==================
 
         st.markdown("---")
 
